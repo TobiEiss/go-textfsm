@@ -29,12 +29,3 @@ var MiscCharMap = map[rune]Token{
 var KeyWordMap = map[string]Token{
 	"Value": VALUE,
 }
-
-func isTokenAKeyword(token Token) bool {
-	for _, value := range KeyWordMap {
-		if value == token {
-			return true
-		}
-	}
-	return false
-}

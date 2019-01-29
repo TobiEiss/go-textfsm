@@ -24,6 +24,8 @@ func TestParserValue(t *testing.T) {
 		{StatementStr: "Value", ErrorType: lexer.MISSINGARGUMENT},
 		{StatementStr: "abc", ErrorType: lexer.ILLEGALTOKEN},
 		{StatementStr: "Value Value", ErrorType: lexer.ILLEGALTOKEN},
+		{StatementStr: `Value Year`, ErrorType: lexer.MISSINGARGUMENT},
+		{StatementStr: `Value (`, ErrorType: lexer.ILLEGALTOKEN},
 	}
 
 	// iterate all tests

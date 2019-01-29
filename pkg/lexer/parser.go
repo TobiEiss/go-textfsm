@@ -18,7 +18,7 @@ type Parser struct {
 type Statement struct {
 	Keyword  Token
 	Variable string
-	Type     string
+	Regex    string
 }
 
 // NewParser returns a new instance of Parser.
@@ -27,11 +27,11 @@ func NewParser(statement string) *Parser {
 	return &Parser{scanner: NewScanner(reader)}
 }
 
-// ParseStatement parses a jill statement.
+// ParseStatement parses a statement.
 func (parser *Parser) ParseStatement() (*Statement, error) {
 	// Find first Token
-	token, _ := parser.scanIgnoreWhitespace()
-	if !isTokenAKeyWord(token) {
+	keywordToken, _ := parser.scanIgnoreWhitespace()
+	if !isTokenAKeyWord(keywordToken) {
 		return nil, parser.createError(ILLEGALTOKEN)
 	}
 
@@ -43,7 +43,25 @@ func (parser *Parser) ParseStatement() (*Statement, error) {
 	if identToken != IDENT {
 		return nil, parser.createError(ILLEGALTOKEN)
 	}
-	return &Statement{Keyword: token, Variable: variable}, nil
+
+	// Next have to be BRACKETLEFT
+	if bracketleftToken, _ := parser.scanIgnoreWhitespace(); bracketleftToken != BRACKETLEFT {
+		return nil, parser.createError(MISSINGARGUMENT)
+	}
+
+	// Now the regex
+	regex := ""
+	for {
+		token, val := parser.scanIgnoreWhitespace()
+		if token == EOF || token == ILLEGAL {
+			return nil, parser.createError(ILLEGALTOKEN)
+		} else if token == BRACKETRIGHT {
+			break
+		}
+		regex += val
+	}
+
+	return &Statement{Keyword: keywordToken, Variable: variable, Regex: regex}, nil
 }
 
 // scanIgnoreWhitespace scans the next non-whitespace token.

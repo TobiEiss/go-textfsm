@@ -12,6 +12,10 @@ const (
 
 	BRACKETLEFT  // (
 	BRACKETRIGHT // )
+	BACKSLASH    // \
+	DOT          // .
+	DOUBLEDOT    // :
+	PLUS         // +
 
 	VALUE
 )
@@ -21,8 +25,12 @@ var eof = rune(0)
 
 // MiscCharMap is a map from the rune to the Token
 var MiscCharMap = map[rune]Token{
-	'(': BRACKETLEFT,
-	')': BRACKETRIGHT,
+	'(':  BRACKETLEFT,
+	')':  BRACKETRIGHT,
+	'\\': BACKSLASH,
+	'.':  DOT,
+	':':  DOUBLEDOT,
+	'+':  PLUS,
 }
 
 // KeyWordMap is a map from the string to the Token

@@ -14,21 +14,20 @@ type Parser struct {
 	}
 }
 
-// Statement is "one line" in a textfsm-file
-type Statement struct {
-	Keyword  Token
+// Val represent a varible like "Value Year (\d+)"
+type Val struct {
 	Variable string
 	Regex    string
 }
 
 // NewParser returns a new instance of Parser.
-func NewParser(statement string) *Parser {
-	reader := strings.NewReader(statement)
+func NewParser(val string) *Parser {
+	reader := strings.NewReader(val)
 	return &Parser{scanner: NewScanner(reader)}
 }
 
-// ParseStatement parses a statement.
-func (parser *Parser) ParseStatement() (*Statement, error) {
+// ParseVal parses a value.
+func (parser *Parser) ParseVal() (*Val, error) {
 	// Find first Token
 	keywordToken, _ := parser.scanIgnoreWhitespace()
 	if !isTokenAKeyWord(keywordToken) {
@@ -61,7 +60,7 @@ func (parser *Parser) ParseStatement() (*Statement, error) {
 		regex += val
 	}
 
-	return &Statement{Keyword: keywordToken, Variable: variable, Regex: regex}, nil
+	return &Val{Variable: variable, Regex: regex}, nil
 }
 
 // scanIgnoreWhitespace scans the next non-whitespace token.

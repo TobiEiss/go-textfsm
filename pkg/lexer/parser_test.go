@@ -8,29 +8,29 @@ import (
 
 func TestParserValue(t *testing.T) {
 	var tests = []struct {
-		StatementStr      string
-		ErrorType         lexer.ErrorType
-		ExpectedStatement lexer.Statement
+		ValStr      string
+		ErrorType   lexer.ErrorType
+		ExpectedVal lexer.Val
 	}{
 		// legal cases
-		{StatementStr: `Value Year (\d+)`, ExpectedStatement: lexer.Statement{Keyword: lexer.VALUE, Variable: "Year", Regex: `\d+`}},
-		{StatementStr: `Value MonthDay (\d+)`, ExpectedStatement: lexer.Statement{Keyword: lexer.VALUE, Variable: "MonthDay", Regex: `\d+`}},
-		{StatementStr: `Value Month (\w+)`, ExpectedStatement: lexer.Statement{Keyword: lexer.VALUE, Variable: "Month", Regex: `\w+`}},
-		{StatementStr: `Value Timezone (\S+)`, ExpectedStatement: lexer.Statement{Keyword: lexer.VALUE, Variable: "Timezone", Regex: `\S+`}},
-		{StatementStr: `Value Time (..:..:..)`, ExpectedStatement: lexer.Statement{Keyword: lexer.VALUE, Variable: "Time", Regex: `..:..:..`}},
+		{ValStr: `Value Year (\d+)`, ExpectedVal: lexer.Val{Variable: "Year", Regex: `\d+`}},
+		{ValStr: `Value MonthDay (\d+)`, ExpectedVal: lexer.Val{Variable: "MonthDay", Regex: `\d+`}},
+		{ValStr: `Value Month (\w+)`, ExpectedVal: lexer.Val{Variable: "Month", Regex: `\w+`}},
+		{ValStr: `Value Timezone (\S+)`, ExpectedVal: lexer.Val{Variable: "Timezone", Regex: `\S+`}},
+		{ValStr: `Value Time (..:..:..)`, ExpectedVal: lexer.Val{Variable: "Time", Regex: `..:..:..`}},
 
 		// illegal cases
-		{StatementStr: "Valuee ", ErrorType: lexer.ILLEGALTOKEN},
-		{StatementStr: "Value", ErrorType: lexer.MISSINGARGUMENT},
-		{StatementStr: "abc", ErrorType: lexer.ILLEGALTOKEN},
-		{StatementStr: "Value Value", ErrorType: lexer.ILLEGALTOKEN},
-		{StatementStr: `Value Year`, ErrorType: lexer.MISSINGARGUMENT},
-		{StatementStr: `Value (`, ErrorType: lexer.ILLEGALTOKEN},
+		{ValStr: "Valuee ", ErrorType: lexer.ILLEGALTOKEN},
+		{ValStr: "Value", ErrorType: lexer.MISSINGARGUMENT},
+		{ValStr: "abc", ErrorType: lexer.ILLEGALTOKEN},
+		{ValStr: "Value Value", ErrorType: lexer.ILLEGALTOKEN},
+		{ValStr: `Value Year`, ErrorType: lexer.MISSINGARGUMENT},
+		{ValStr: `Value (`, ErrorType: lexer.ILLEGALTOKEN},
 	}
 
 	// iterate all tests
 	for index, test := range tests {
-		stmt, err := lexer.NewParser(test.StatementStr).ParseStatement()
+		stmt, err := lexer.NewParser(test.ValStr).ParseVal()
 
 		// expected Error-Case
 		if lexerError, ok := err.(*lexer.Error); ok {
@@ -40,21 +40,16 @@ func TestParserValue(t *testing.T) {
 			// error was expected
 		}
 
-		// no-Error-Case - check expected statement
+		// no-Error-Case - check expected val
 		if err == nil {
-			if stmt.Variable != test.ExpectedStatement.Variable {
+			if stmt.Variable != test.ExpectedVal.Variable {
 				t.Errorf("%d failed: Variable '%s' is not equal expected Variable '%s'",
-					index, stmt.Variable, test.ExpectedStatement.Variable)
+					index, stmt.Variable, test.ExpectedVal.Variable)
 			}
 
-			if stmt.Keyword != test.ExpectedStatement.Keyword {
-				t.Errorf("%d failed: Keyword '%d' is not equal expected Keyword '%d'",
-					index, stmt.Keyword, test.ExpectedStatement.Keyword)
-			}
-
-			if stmt.Regex != test.ExpectedStatement.Regex {
+			if stmt.Regex != test.ExpectedVal.Regex {
 				t.Errorf("%d failed: Regex '%s' is not equal expected Regex '%s'",
-					index, stmt.Regex, test.ExpectedStatement.Regex)
+					index, stmt.Regex, test.ExpectedVal.Regex)
 			}
 		}
 	}

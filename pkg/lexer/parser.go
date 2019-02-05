@@ -2,6 +2,8 @@ package lexer
 
 import (
 	"strings"
+
+	"github.com/TobiEiss/go-textfsm/pkg/models"
 )
 
 // Parser represents a parser.
@@ -14,12 +16,6 @@ type Parser struct {
 	}
 }
 
-// Val represent a varible like "Value Year (\d+)"
-type Val struct {
-	Variable string
-	Regex    string
-}
-
 // NewParser returns a new instance of Parser.
 func NewParser(val string) *Parser {
 	reader := strings.NewReader(val)
@@ -27,7 +23,7 @@ func NewParser(val string) *Parser {
 }
 
 // ParseVal parses a value.
-func (parser *Parser) ParseVal() (*Val, error) {
+func (parser *Parser) ParseVal() (*models.Val, error) {
 	// Find first Token
 	keywordToken, _ := parser.scanIgnoreWhitespace()
 	if !isTokenAKeyWord(keywordToken) {
@@ -60,7 +56,7 @@ func (parser *Parser) ParseVal() (*Val, error) {
 		regex += val
 	}
 
-	return &Val{Variable: variable, Regex: regex}, nil
+	return &models.Val{Variable: variable, Regex: regex}, nil
 }
 
 // scanIgnoreWhitespace scans the next non-whitespace token.

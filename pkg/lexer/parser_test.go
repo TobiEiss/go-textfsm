@@ -4,20 +4,21 @@ import (
 	"testing"
 
 	"github.com/TobiEiss/go-textfsm/pkg/lexer"
+	"github.com/TobiEiss/go-textfsm/pkg/models"
 )
 
 func TestParserValue(t *testing.T) {
 	var tests = []struct {
 		ValStr      string
 		ErrorType   lexer.ErrorType
-		ExpectedVal lexer.Val
+		ExpectedVal models.Val
 	}{
 		// legal cases
-		{ValStr: `Value Year (\d+)`, ExpectedVal: lexer.Val{Variable: "Year", Regex: `\d+`}},
-		{ValStr: `Value MonthDay (\d+)`, ExpectedVal: lexer.Val{Variable: "MonthDay", Regex: `\d+`}},
-		{ValStr: `Value Month (\w+)`, ExpectedVal: lexer.Val{Variable: "Month", Regex: `\w+`}},
-		{ValStr: `Value Timezone (\S+)`, ExpectedVal: lexer.Val{Variable: "Timezone", Regex: `\S+`}},
-		{ValStr: `Value Time (..:..:..)`, ExpectedVal: lexer.Val{Variable: "Time", Regex: `..:..:..`}},
+		{ValStr: `Value Year (\d+)`, ExpectedVal: models.Val{Variable: "Year", Regex: `\d+`}},
+		{ValStr: `Value MonthDay (\d+)`, ExpectedVal: models.Val{Variable: "MonthDay", Regex: `\d+`}},
+		{ValStr: `Value Month (\w+)`, ExpectedVal: models.Val{Variable: "Month", Regex: `\w+`}},
+		{ValStr: `Value Timezone (\S+)`, ExpectedVal: models.Val{Variable: "Timezone", Regex: `\S+`}},
+		{ValStr: `Value Time (..:..:..)`, ExpectedVal: models.Val{Variable: "Time", Regex: `..:..:..`}},
 
 		// illegal cases
 		{ValStr: "Valuee ", ErrorType: lexer.ILLEGALTOKEN},
@@ -53,4 +54,8 @@ func TestParserValue(t *testing.T) {
 			}
 		}
 	}
+}
+
+func TestCreateAST(t *testing.T) {
+
 }

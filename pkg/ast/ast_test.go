@@ -8,11 +8,18 @@ import (
 
 func TestAST(t *testing.T) {
 	var tests = []struct {
-		Lines []string
+		Lines            []string
+		ExpectedVals     int
+		ExpectedCommands int
 	}{
-		{Lines: []string{
-			`Value Year (\d+)`,
-			`Value Time (..:..:..)`},
+		{
+			Lines: []string{
+				`Value Year (\d+)`,
+				`Value Time (..:..:..)`,
+				`Start`,
+				`^${Time}.* ${Timezone} \w+ ${Month} ${MonthDay} ${Year} -> Record`},
+			ExpectedVals:     2,
+			ExpectedCommands: 1,
 		},
 	}
 
@@ -34,9 +41,15 @@ func TestAST(t *testing.T) {
 		}
 
 		// check result
-		if len(ast.Vals) != len(test.Lines) {
+		if len(ast.Vals) != test.ExpectedVals {
 			t.Errorf("%d failed: len of ast.vals '%d' is not equal expected len '%d'",
-				index, len(ast.Vals), len(test.Lines))
+				index, len(ast.Vals), test.ExpectedVals)
+		}
+
+		// check commands
+		if len(ast.Commands) != test.ExpectedCommands {
+			t.Errorf("%d failed: len of ast.commands '%d' is not equal expected len '%d'",
+				index, len(ast.Commands), test.ExpectedCommands)
 		}
 	}
 }

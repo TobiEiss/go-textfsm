@@ -5,7 +5,11 @@ type StatementType int
 
 const (
 	// Value describes the type of statement as variable
-	Value StatementType = iota
+	Value StatementType = iota + 1
+	// Start is the start statement
+	Start
+	// Command represent a command
+	Command
 )
 
 // AbstractStatement is the raw parsed statement
@@ -13,12 +17,28 @@ type AbstractStatement struct {
 	Type         StatementType
 	VariableName string
 	Regex        string
+	Actions      []Action
+	Record       string
 }
 
-// Value creates a Value from AbstractStatemente
+// Action is one regex in a command
+type Action struct {
+	Value string
+	Regex string
+}
+
+// Value creates a Val from AbstractStatemente
 func (statement *AbstractStatement) Value() Val {
 	return Val{
 		Variable: (*statement).VariableName,
 		Regex:    (*statement).Regex,
+	}
+}
+
+// Command creates a Cmd from AbstractStatemente
+func (statement *AbstractStatement) Command() Cmd {
+	return Cmd{
+		Actions: statement.Actions,
+		Record:  statement.Record,
 	}
 }

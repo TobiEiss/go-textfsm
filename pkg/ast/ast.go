@@ -9,8 +9,8 @@ import (
 func CreateAST(lines chan string) (models.AST, error) {
 	// create ast
 	ast := models.AST{
-		Command: []models.Command{},
-		Vals:    []models.Val{},
+		Commands: []models.Cmd{},
+		Vals:     []models.Val{},
 	}
 
 	for {
@@ -30,6 +30,8 @@ func CreateAST(lines chan string) (models.AST, error) {
 		switch as.Type {
 		case models.Value:
 			ast.Vals = append(ast.Vals, as.Value())
+		case models.Command:
+			ast.Commands = append(ast.Commands, as.Command())
 		}
 	}
 

@@ -1,6 +1,7 @@
 package lexer
 
 import (
+	"errors"
 	"strings"
 
 	"github.com/TobiEiss/go-textfsm/pkg/models"
@@ -24,48 +25,25 @@ func NewParser(val string) *Parser {
 
 // ParseStatement parses a statement.
 func (parser *Parser) ParseStatement() (*models.AbstractStatement, error) {
-	statement := &models.AbstractStatement{}
 	// Find first Token
-	keywordToken, _ := parser.scanIgnoreWhitespace()
-	if !isTokenAKeyWord(keywordToken) {
+	token, _ := parser.scanIgnoreWhitespace()
+	if isTokenAKeyWord(token) {
+		// Kind of keyword
+		switch token {
+		case VALUE:
+			return parser.parseVal()
+		case START:
+			return &models.AbstractStatement{Type: models.Start}, nil
+		}
 		return nil, parser.createError(ILLEGALTOKEN)
 	}
 
-	// Kind of keyword
-	switch keywordToken {
-	case VALUE:
-		// Next have to be a variable name
-		identToken, variable := parser.scanIgnoreWhitespace()
-		if identToken == EOF {
-			return nil, parser.createError(MISSINGARGUMENT)
-		}
-		if identToken != IDENT {
-			return nil, parser.createError(ILLEGALTOKEN)
-		}
-
-		// Next have to be BRACKETLEFT
-		if bracketleftToken, _ := parser.scanIgnoreWhitespace(); bracketleftToken != BRACKETLEFT {
-			return nil, parser.createError(MISSINGARGUMENT)
-		}
-
-		// Now the regex
-		regex := ""
-		for {
-			token, val := parser.scanIgnoreWhitespace()
-			if token == EOF || token == ILLEGAL {
-				return nil, parser.createError(ILLEGALTOKEN)
-			} else if token == BRACKETRIGHT {
-				break
-			}
-			regex += val
-		}
-
-		statement.Type = models.Value
-		statement.VariableName = variable
-		statement.Regex = regex
+	// if token is not a keyword it have to be a command
+	if token == CIRCUMFLEX {
+		return parser.parseCmd()
 	}
 
-	return statement, nil
+	return nil, errors.New("Can't parse")
 }
 
 // scanIgnoreWhitespace scans the next non-whitespace token.

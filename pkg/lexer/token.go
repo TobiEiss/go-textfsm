@@ -10,12 +10,18 @@ const (
 
 	IDENT // identifier
 
-	BRACKETLEFT  // (
-	BRACKETRIGHT // )
-	BACKSLASH    // \
-	DOT          // .
-	DOUBLEDOT    // :
-	PLUS         // +
+	BRACKETLEFT       // (
+	BRACKETRIGHT      // )
+	CURLYBRACKETLEFT  // {
+	CURLYBRACKETRIGHT // }
+	BACKSLASH         // \
+	DOT               // .
+	DOUBLEDOT         // :
+	PLUS              // +
+	MINUS             // -
+	CIRCUMFLEX        // ^
+	DOLAR             // $
+	BIGGER            // >
 
 	VALUE
 	START
@@ -28,10 +34,16 @@ var eof = rune(0)
 var MiscCharMap = map[rune]Token{
 	'(':  BRACKETLEFT,
 	')':  BRACKETRIGHT,
+	'{':  CURLYBRACKETLEFT,
+	'}':  CURLYBRACKETRIGHT,
 	'\\': BACKSLASH,
 	'.':  DOT,
 	':':  DOUBLEDOT,
 	'+':  PLUS,
+	'-':  MINUS,
+	'^':  CIRCUMFLEX,
+	'$':  DOLAR,
+	'>':  BIGGER,
 }
 
 // KeyWordMap is a map from the string to the Token

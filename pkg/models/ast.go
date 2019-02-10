@@ -6,13 +6,13 @@ type Val struct {
 	Regex    string
 }
 
-// Statement is one statement after keyword "Start"
-type Statement struct {
+// Command is one statement after keyword "Start"
+type Command struct {
 	Action string
 }
 
-// AST is the abstract statement tree
+// AST is the abstract command tree
 type AST struct {
-	Vals       []Val
-	Statements []Statement
+	Vals    []Val
+	Command []Command
 }

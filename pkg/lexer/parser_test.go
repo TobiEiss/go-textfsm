@@ -31,7 +31,7 @@ func TestParserValue(t *testing.T) {
 
 	// iterate all tests
 	for index, test := range tests {
-		stmt, err := lexer.NewParser(test.ValStr).ParseVal()
+		stmt, err := lexer.NewParser(test.ValStr).ParseStatement()
 
 		// expected Error-Case
 		if lexerError, ok := err.(*lexer.Error); ok {
@@ -43,9 +43,10 @@ func TestParserValue(t *testing.T) {
 
 		// no-Error-Case - check expected val
 		if err == nil {
-			if stmt.Variable != test.ExpectedVal.Variable {
+			val := stmt.Value()
+			if val.Variable != test.ExpectedVal.Variable {
 				t.Errorf("%d failed: Variable '%s' is not equal expected Variable '%s'",
-					index, stmt.Variable, test.ExpectedVal.Variable)
+					index, val.Variable, test.ExpectedVal.Variable)
 			}
 
 			if stmt.Regex != test.ExpectedVal.Regex {
@@ -54,8 +55,4 @@ func TestParserValue(t *testing.T) {
 			}
 		}
 	}
-}
-
-func TestCreateAST(t *testing.T) {
-
 }

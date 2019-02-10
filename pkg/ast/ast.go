@@ -7,12 +7,12 @@ import (
 
 // CreateAST get a chan with lines to parse
 func CreateAST(lines chan string) (models.AST, error) {
+	// create ast
 	ast := models.AST{
-		Statements: []models.Statement{},
-		Vals:       []models.Val{},
+		Command: []models.Command{},
+		Vals:    []models.Val{},
 	}
 
-	// collect all vals
 	for {
 		// get next line
 		line, ok := <-lines
@@ -20,12 +20,17 @@ func CreateAST(lines chan string) (models.AST, error) {
 			break
 		}
 
-		// try to get val
-		val, err := lexer.NewParser(line).ParseVal()
+		// check what is line
+		parser := lexer.NewParser(line)
+		as, err := parser.ParseStatement()
 		if err != nil {
 			return ast, err
 		}
-		ast.Vals = append(ast.Vals, *val)
+
+		switch as.Type {
+		case models.Value:
+			ast.Vals = append(ast.Vals, as.Value())
+		}
 	}
 
 	return ast, nil

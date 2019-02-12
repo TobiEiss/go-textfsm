@@ -47,7 +47,7 @@ func (parser *Parser) parseCmd() (*models.AbstractStatement, error) {
 		token, val := parser.scanIgnoreWhitespace()
 
 		switch token {
-		case CURLYBRACKETLEFT:
+		case DOLAR:
 			valueName, err := parseValue(parser)
 			if err != nil {
 				return statement, err

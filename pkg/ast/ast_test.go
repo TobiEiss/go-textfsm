@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/TobiEiss/go-textfsm/pkg/ast"
+	"github.com/TobiEiss/go-textfsm/pkg/models"
 )
 
 func TestAST(t *testing.T) {
@@ -57,11 +58,19 @@ func TestAST(t *testing.T) {
 func TestParseCommands(t *testing.T) {
 	var tests = []struct {
 		Command         string
-		ExpectedActions []string
+		ExpectedActions []models.Action
 	}{
 		{
-			Command:         `^${Time}.* ${Timezone} \w+ ${Month} ${MonthDay} ${Year} -> Record`,
-			ExpectedActions: []string{`^${Time}`, `.*`, `${Timezone}`, `\w+`, `${Month}`, `${MonthDay}`, `${Year}`},
+			Command: `^${Time}.* ${Timezone} \w+ ${Month} ${MonthDay} ${Year} -> Record`,
+			ExpectedActions: []models.Action{
+				models.Action{Value: "Time"},
+				models.Action{Regex: ".*"},
+				models.Action{Value: "Timezone"},
+				models.Action{Regex: `\w+`},
+				models.Action{Value: "Month"},
+				models.Action{Value: "MonthDay"},
+				models.Action{Value: "Year"},
+			},
 		},
 	}
 
@@ -80,10 +89,18 @@ func TestParseCommands(t *testing.T) {
 			t.Error(err)
 		}
 
-		// check
+		// check len of actions
 		if len(ast.Commands[0].Actions) != len(test.ExpectedActions) {
 			t.Errorf("%d failed: len of actions '%d' is not equal expected len '%d'",
 				index, len(ast.Commands[0].Actions), len(test.ExpectedActions))
+		}
+
+		// check actions
+		for i := 0; i < len(test.ExpectedActions); i++ {
+			if test.ExpectedActions[i] != ast.Commands[0].Actions[i] {
+				t.Errorf("%d failed: action '%s' is not equal to expected Action '%s'",
+					index, test.ExpectedActions[i], ast.Commands[0].Actions[i])
+			}
 		}
 	}
 }

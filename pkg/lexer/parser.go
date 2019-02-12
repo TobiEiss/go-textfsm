@@ -43,6 +43,11 @@ func (parser *Parser) ParseStatement() (*models.AbstractStatement, error) {
 		return parser.parseCmd()
 	}
 
+	// if this is a nil-line -> continue
+	if token == EOF {
+		return nil, nil
+	}
+
 	return nil, errors.New("Can't parse")
 }
 

@@ -38,7 +38,20 @@ func TestProcessAST(t *testing.T) {
 		t.Error(err)
 	}
 
-	if !process.Do(srcCh) {
-		t.Error("can't find matching line")
+	record := process.Do(srcCh)
+
+	// check
+	correctRecord := map[string]interface{}{
+		"Year":     "2009",
+		"Time":     "18:42:41",
+		"Timezone": "PST",
+		"Month":    "Feb",
+		"MonthDay": "8",
+	}
+
+	for k, v := range correctRecord {
+		if record["Record"][k] != v {
+			t.Errorf("'%s' is not expected '%s' - instead it is '%s'", k, v, record[k])
+		}
 	}
 }

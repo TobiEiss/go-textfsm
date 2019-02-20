@@ -17,3 +17,13 @@ type Cmd struct {
 	Actions []Action
 	Record  string
 }
+
+// GetValForValName searches a val for a valName
+func (ast AST) GetValForValName(valName string) *Val {
+	for _, val := range ast.Vals {
+		if val.Variable == valName {
+			return &val
+		}
+	}
+	return nil
+}

@@ -32,7 +32,11 @@ func (parser *Parser) parseCmd() (*models.AbstractStatement, error) {
 		for {
 			token, val := parser.scan()
 			switch token {
+			case DOLAR:
+				parser.unscan()
+				return
 			case WHITESPACE:
+				parser.unscan()
 				return
 			case EOF:
 				return
@@ -44,8 +48,7 @@ func (parser *Parser) parseCmd() (*models.AbstractStatement, error) {
 
 	// iterate
 	for {
-		token, val := parser.scanIgnoreWhitespace()
-
+		token, val := parser.scan()
 		switch token {
 		case DOLAR:
 			valueName, err := parseValue(parser)
@@ -66,6 +69,11 @@ func (parser *Parser) parseCmd() (*models.AbstractStatement, error) {
 				statement.Actions = append(statement.Actions, models.Action{Regex: parseRegex("->"+val, parser)})
 			}
 
+			// delete last WHITESPACE if there is one
+			if statement.Actions[len(statement.Actions)-1].Regex == " " {
+				statement.Actions = statement.Actions[:len(statement.Actions)-1]
+			}
+
 			// now follows the record-name
 			recordname := ""
 			for {
@@ -81,6 +89,8 @@ func (parser *Parser) parseCmd() (*models.AbstractStatement, error) {
 					recordname += val
 				}
 			}
+		case WHITESPACE:
+			statement.Actions = append(statement.Actions, models.Action{Regex: " "})
 		default:
 			statement.Actions = append(statement.Actions, models.Action{Regex: parseRegex(val, parser)})
 		}

@@ -77,6 +77,11 @@ func (parser *Parser) scan() (token Token, literal string) {
 	return
 }
 
+// unscan pushes the previously read token back onto the buffer.
+func (parser *Parser) unscan() {
+	parser.buf.buffersize = 1
+}
+
 func isTokenAKeyWord(token Token) bool {
 	for _, value := range KeyWordMap {
 		if value == token {

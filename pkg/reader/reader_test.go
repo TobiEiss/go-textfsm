@@ -17,7 +17,7 @@ var (
 )
 
 func TestReader(t *testing.T) {
-	filepath := basepath + "/../../testfiles/01.txt"
+	filepath := basepath + "/../../testfiles/src01.txt"
 	ch := make(chan string)
 	go reader.ReadLineByLine(filepath, ch)
 
@@ -31,7 +31,7 @@ func TestReader(t *testing.T) {
 }
 
 func TestReaderWithCreatingAST(t *testing.T) {
-	filepath := basepath + "/../../testfiles/02.txt"
+	filepath := basepath + "/../../testfiles/01.txt"
 	ch := make(chan string)
 	go reader.ReadLineByLine(filepath, ch)
 

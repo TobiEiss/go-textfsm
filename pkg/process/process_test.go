@@ -17,7 +17,7 @@ var (
 
 func TestProcessAST(t *testing.T) {
 	// read template
-	filepath := basepath + "/../../testfiles/02.txt"
+	filepath := basepath + "/../../testfiles/01.txt"
 	tmplCh := make(chan string)
 	go reader.ReadLineByLine(filepath, tmplCh)
 

@@ -27,7 +27,7 @@ func CreateAST(lines chan string) (models.AST, error) {
 			return ast, err
 		}
 
-		// as can be nil, if there is a ""-line (empty)
+		// "as" can be nil, if there is a ""-line (empty)
 		if as != nil {
 			switch as.Type {
 			case models.Value:

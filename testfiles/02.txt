@@ -1,0 +1,10 @@
+Value Version ([^ ,]+)
+Value Uptime (.*)
+Value ConfigRegister (\w+)
+Value ResetReason (.*)
+
+Start
+  ^Cisco IOS .*Version ${Version},
+  ^.*uptime is ${Uptime}
+  ^Last reset from ${ResetReason}
+  ^Configuration register is ${ConfigRegister} -> Record

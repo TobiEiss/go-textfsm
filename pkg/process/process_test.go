@@ -16,42 +16,69 @@ var (
 )
 
 func TestProcessAST(t *testing.T) {
-	// read template
-	filepath := basepath + "/../../testfiles/01.txt"
-	tmplCh := make(chan string)
-	go reader.ReadLineByLine(filepath, tmplCh)
-
-	// read file
-	filepathSrc := basepath + "/../../testfiles/src01.txt"
-	srcCh := make(chan string)
-	go reader.ReadLineByLine(filepathSrc, srcCh)
-
-	// create AST
-	ast, err := ast.CreateAST(tmplCh)
-	if err != nil {
-		t.Error(err)
+	tests := []struct {
+		TemplateFilePath string
+		SourceFilePath   string
+		CorrectRecord    map[string]interface{}
+	}{
+		{
+			TemplateFilePath: "/../../testfiles/01.txt",
+			SourceFilePath:   "/../../testfiles/src01.txt",
+			CorrectRecord: map[string]interface{}{
+				"Year":     "2009",
+				"Time":     "18:42:41",
+				"Timezone": "PST",
+				"Month":    "Feb",
+				"MonthDay": "8",
+			},
+		},
+		{
+			TemplateFilePath: "/../../testfiles/02.txt",
+			SourceFilePath:   "/../../testfiles/src02.txt",
+			CorrectRecord: map[string]interface{}{
+				"ResetReason":    "Reload",
+				"Version":        "12.2(31)SGA1",
+				"Uptime":         "11 weeks, 4 days, 20 hours, 26 minutes",
+				"ConfigRegister": "0x2102",
+			},
+		},
 	}
 
-	// process ast
-	process, err := process.NewProcess(ast)
-	if err != nil {
-		t.Error(err)
-	}
+	// iterate all test.cases
+	for index, test := range tests {
+		// read template
+		filepath := basepath + test.TemplateFilePath
+		tmplCh := make(chan string)
+		go reader.ReadLineByLine(filepath, tmplCh)
 
-	record := process.Do(srcCh)
+		// read file
+		filepathSrc := basepath + test.SourceFilePath
+		srcCh := make(chan string)
+		go reader.ReadLineByLine(filepathSrc, srcCh)
 
-	// check
-	correctRecord := map[string]interface{}{
-		"Year":     "2009",
-		"Time":     "18:42:41",
-		"Timezone": "PST",
-		"Month":    "Feb",
-		"MonthDay": "8",
-	}
+		// create AST
+		ast, err := ast.CreateAST(tmplCh)
+		if err != nil {
+			t.Error(err)
+		}
 
-	for k, v := range correctRecord {
-		if record["Record"][k] != v {
-			t.Errorf("'%s' is not expected '%s' - instead it is '%s'", k, v, record[k])
+		// process ast
+		process, err := process.NewProcess(ast)
+		if err != nil {
+			t.Error(err)
+		}
+
+		record := process.Do(srcCh)
+
+		// check
+		for k, v := range test.CorrectRecord {
+			if len(record["Record"][k]) < 1 {
+				t.Errorf("%d failed: Values for '%s' are missing", index, k)
+			}
+			if record["Record"][k][0] != v {
+				t.Errorf("%d failed: Field '%s' Value '%s' is not equal expected '%s'", index, k, v, record["Record"][k][0])
+			}
 		}
 	}
+
 }

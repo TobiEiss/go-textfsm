@@ -10,18 +10,22 @@ const (
 
 	IDENT // identifier
 
-	BRACKETLEFT       // (
-	BRACKETRIGHT      // )
-	CURLYBRACKETLEFT  // {
-	CURLYBRACKETRIGHT // }
-	BACKSLASH         // \
-	DOT               // .
-	DOUBLEDOT         // :
-	PLUS              // +
-	MINUS             // -
-	CIRCUMFLEX        // ^
-	DOLAR             // $
-	BIGGER            // >
+	BRACKETLEFT        // (
+	BRACKETRIGHT       // )
+	CURLYBRACKETLEFT   // {
+	CURLYBRACKETRIGHT  // }
+	SQUAREBRACKETLEFT  // [
+	SQUAREBRACKETRIGHT // ]
+	BACKSLASH          // \
+	DOT                // .
+	COMMA              // ,
+	DOUBLEDOT          // :
+	PLUS               // +
+	MINUS              // -
+	ASTERISK           //*
+	CIRCUMFLEX         // ^
+	DOLAR              // $
+	BIGGER             // >
 
 	VALUE
 	START
@@ -36,11 +40,15 @@ var MiscCharMap = map[rune]Token{
 	')':  BRACKETRIGHT,
 	'{':  CURLYBRACKETLEFT,
 	'}':  CURLYBRACKETRIGHT,
+	'[':  SQUAREBRACKETLEFT,
+	']':  SQUAREBRACKETRIGHT,
 	'\\': BACKSLASH,
 	'.':  DOT,
+	',':  COMMA,
 	':':  DOUBLEDOT,
 	'+':  PLUS,
 	'-':  MINUS,
+	'*':  ASTERISK,
 	'^':  CIRCUMFLEX,
 	'$':  DOLAR,
 	'>':  BIGGER,

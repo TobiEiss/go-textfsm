@@ -27,6 +27,8 @@ func NewParser(val string) *Parser {
 func (parser *Parser) ParseStatement() (*models.AbstractStatement, error) {
 	// Find first Token
 	token, _ := parser.scanIgnoreWhitespace()
+
+	// check if this a keyword
 	if isTokenAKeyWord(token) {
 		// Kind of keyword
 		switch token {
@@ -41,6 +43,11 @@ func (parser *Parser) ParseStatement() (*models.AbstractStatement, error) {
 	// if token is not a keyword it have to be a command
 	if token == CIRCUMFLEX {
 		return parser.parseCmd()
+	}
+
+	// check if this is a comment
+	if token == HASH {
+		return parser.parseCmmt()
 	}
 
 	// if this is a nil-line -> continue

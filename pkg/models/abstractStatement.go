@@ -10,6 +10,8 @@ const (
 	Start
 	// Command represent a command
 	Command
+	// Comment is a statement to ignore
+	Comment
 )
 
 // AbstractStatement is the raw parsed statement
@@ -19,6 +21,7 @@ type AbstractStatement struct {
 	Regex        string
 	Actions      []Action
 	Record       string
+	Comment      string
 }
 
 // Action is one regex in a command

@@ -26,6 +26,7 @@ const (
 	CIRCUMFLEX         // ^
 	DOLAR              // $
 	BIGGER             // >
+	HASH               // #
 
 	VALUE
 	START
@@ -52,6 +53,7 @@ var MiscCharMap = map[rune]Token{
 	'^':  CIRCUMFLEX,
 	'$':  DOLAR,
 	'>':  BIGGER,
+	'#':  HASH,
 }
 
 // KeyWordMap is a map from the string to the Token

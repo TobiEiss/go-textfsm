@@ -56,3 +56,26 @@ func TestParserValue(t *testing.T) {
 		}
 	}
 }
+
+func TestParserStatements(t *testing.T) {
+	var tests = []struct {
+		ValStr         string
+		ExpectedASttmt models.AbstractStatement
+	}{
+		// legal cases
+		{ValStr: `#test`, ExpectedASttmt: models.AbstractStatement{Comment: "test"}},
+	}
+
+	// iterate all tests
+	for index, test := range tests {
+		stmt, err := lexer.NewParser(test.ValStr).ParseStatement()
+		if err != nil {
+			t.Errorf("%d failed: Error occured: %s", index, err)
+		}
+
+		// check statement
+		if stmt.Comment != test.ExpectedASttmt.Comment {
+			t.Errorf("%d failed: Comment '%s' is not equal expected comment '%s'", index, stmt.Comment, test.ExpectedASttmt.Comment)
+		}
+	}
+}

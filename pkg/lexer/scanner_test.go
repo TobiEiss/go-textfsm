@@ -16,7 +16,7 @@ func TestScanner(t *testing.T) {
 	}{
 		// Special tokens (EOF, ILLEGAL, WHITESPACE)
 		{sequence: ``, token: lexer.EOF},
-		{`#`, lexer.ILLEGAL, `#`},
+		{`#`, lexer.HASH, `#`},
 		{` `, lexer.WHITESPACE, " "},
 		{"\t", lexer.WHITESPACE, "\t"},
 		{"\n", lexer.WHITESPACE, "\n"},

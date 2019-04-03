@@ -8,7 +8,7 @@ import (
 
 // Process describes how to implement process an AST
 type Process interface {
-	Do(chan string) map[string]map[string][]interface{}
+	Do(chan string) map[string]map[string]*Column
 }
 
 type process struct {
@@ -44,9 +44,9 @@ func NewProcess(ast models.AST) (Process, error) {
 }
 
 // Do process an ast. Get inputfile as channel line by line
-func (process process) Do(in chan string) map[string]map[string][]interface{} {
+func (process process) Do(in chan string) map[string]map[string]*Column {
 	// destination-record
-	record := map[string]map[string][]interface{}{}
+	record := map[string]map[string]*Column{}
 
 	// temp-record
 	tmpRecord := map[string][]interface{}{}
@@ -81,12 +81,17 @@ func (process process) Do(in chan string) map[string]map[string][]interface{} {
 			// if processCommand has Record, add tempRecord to Record
 			if processCommand.Command.Record != "" {
 				if record[processCommand.Command.Record] == nil {
-					record[processCommand.Command.Record] = map[string][]interface{}{}
+					record[processCommand.Command.Record] = map[string]*Column{}
 				}
 				// iterate all keys of tmpRecord and append to destination-record
 				for k, v := range tmpRecord {
-					record[processCommand.Command.Record][k] =
-						append(record[processCommand.Command.Record][k], v...)
+					// create new Column if nil
+					if record[processCommand.Command.Record][k] == nil {
+						record[processCommand.Command.Record][k] = &Column{}
+					}
+					// add values of tmpRecord
+					record[processCommand.Command.Record][k].Entries =
+						append(record[processCommand.Command.Record][k].Entries, v...)
 				}
 				// clear tempRecord
 				tmpRecord = map[string][]interface{}{}

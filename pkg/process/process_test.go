@@ -19,27 +19,36 @@ func TestProcessAST(t *testing.T) {
 	tests := []struct {
 		TemplateFilePath string
 		SourceFilePath   string
-		CorrectRecord    map[string]interface{}
+		CorrectRecord    map[string]process.Column
 	}{
 		{
 			TemplateFilePath: "/../../testfiles/01.txt",
 			SourceFilePath:   "/../../testfiles/src01.txt",
-			CorrectRecord: map[string]interface{}{
-				"Year":     "2009",
-				"Time":     "18:42:41",
-				"Timezone": "PST",
-				"Month":    "Feb",
-				"MonthDay": "8",
+			CorrectRecord: map[string]process.Column{
+				"Year":     process.Column{Entries: []interface{}{"2009"}},
+				"Time":     process.Column{Entries: []interface{}{"18:42:41"}},
+				"Timezone": process.Column{Entries: []interface{}{"PST"}},
+				"Month":    process.Column{Entries: []interface{}{"Feb"}},
+				"MonthDay": process.Column{Entries: []interface{}{"8"}},
 			},
 		},
 		{
 			TemplateFilePath: "/../../testfiles/02.txt",
 			SourceFilePath:   "/../../testfiles/src02.txt",
-			CorrectRecord: map[string]interface{}{
-				"ResetReason":    "Reload",
-				"Version":        "12.2(31)SGA1",
-				"Uptime":         "11 weeks, 4 days, 20 hours, 26 minutes",
-				"ConfigRegister": "0x2102",
+			CorrectRecord: map[string]process.Column{
+				"ResetReason":    process.Column{Entries: []interface{}{"Reload"}},
+				"Version":        process.Column{Entries: []interface{}{"12.2(31)SGA1"}},
+				"Uptime":         process.Column{Entries: []interface{}{"11 weeks, 4 days, 20 hours, 26 minutes"}},
+				"ConfigRegister": process.Column{Entries: []interface{}{"0x2102"}},
+			},
+		},
+		{
+			TemplateFilePath: "/../../testfiles/03.txt",
+			SourceFilePath:   "/../../testfiles/src03.txt",
+			CorrectRecord: map[string]process.Column{
+				"Slot":        process.Column{Entries: []interface{}{"0", "1", "2", "3"}},
+				"State":       process.Column{Entries: []interface{}{"Online", "Online", "Online", "Online"}},
+				"Temperature": process.Column{Entries: []interface{}{"24", "25", "24", "23"}},
 			},
 		},
 	}
@@ -72,11 +81,17 @@ func TestProcessAST(t *testing.T) {
 
 		// check
 		for k, v := range test.CorrectRecord {
-			if len(record["Record"][k]) < 1 {
+			// check if entries are available
+			if len(record["Record"][k].Entries) < 1 {
 				t.Errorf("%d failed: Values for '%s' are missing", index, k)
 			}
-			if record["Record"][k][0] != v {
-				t.Errorf("%d failed: Field '%s' Value '%s' is not equal expected '%s'", index, k, v, record["Record"][k][0])
+
+			// check if erntries are correct
+			for entryIndex, entrie := range v.Entries {
+				if record["Record"][k].Entries[entryIndex] != entrie {
+					t.Errorf("%d failed: Field '%s' Value '%s' is not equal expected '%+v'",
+						index, k, record["Record"][k].Entries[entryIndex], entrie)
+				}
 			}
 		}
 	}

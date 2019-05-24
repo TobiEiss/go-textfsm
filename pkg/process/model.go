@@ -4,7 +4,7 @@ import "reflect"
 
 // Column of record
 type Column struct {
-	Type    reflect.Type
+	Type    reflect.Type `json:"-"`
 	Entries []interface{}
 }
 

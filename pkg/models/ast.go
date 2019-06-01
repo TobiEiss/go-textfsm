@@ -46,5 +46,6 @@ func (ast AST) CreateMatchingLine(cmd Cmd) (matchingLine string, err error) {
 		}
 		matchingLine += action.Regex
 	}
+	matchingLine += "$"
 	return
 }

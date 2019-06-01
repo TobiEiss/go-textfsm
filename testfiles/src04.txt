@@ -1,0 +1,10 @@
+                     Temp  CPU Utilization (%)   Memory    Utilization (%)
+Slot State            (C)  Total  Interrupt      DRAM (MB) Heap     Buffer
+  0  Online            24      7          0       256        38         51
+  1  Online            25      7          0       256        38         51
+  2  Online            24      3          0       256        37         49
+  3  Online            23      3          0       256        37         49
+  4  Empty
+  5  Empty
+  6  Empty
+  7  Empty

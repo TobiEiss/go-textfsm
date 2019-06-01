@@ -8,7 +8,7 @@ import (
 
 // Process describes how to implement process an AST
 type Process interface {
-	Do(chan string) map[string]map[string]*Column
+	Do(chan string) map[string]*Column
 }
 
 type process struct {
@@ -44,14 +44,18 @@ func NewProcess(ast models.AST) (Process, error) {
 }
 
 // Do process an ast. Get inputfile as channel line by line
-func (process process) Do(in chan string) map[string]map[string]*Column {
+func (process process) Do(in chan string) map[string]*Column {
 	// destination-record
-	record := map[string]map[string]*Column{}
+	record := map[string]*Column{}
+
+	// create all records and all columns
+	for _, colHeader := range process.ast.Vals {
+		record[colHeader.Variable] = &Column{}
+	}
 
 	// temp-record
-	tmpRecord := map[string][]interface{}{}
+	tmpRecord := map[string]interface{}{}
 
-	commandIndex := 0
 	for {
 		// get next line
 		line, ok := <-in
@@ -59,46 +63,38 @@ func (process process) Do(in chan string) map[string]map[string]*Column {
 			break
 		}
 
-		processCommand := process.commands[commandIndex%len(process.commands)]
+		for _, processCommand := range process.commands {
+			// check one command matches to line
+			re := regexp.MustCompile(processCommand.MatchingLine)
 
-		// check one command matches to line
-		re := regexp.MustCompile(processCommand.MatchingLine)
+			// check if line is relevant
+			if re.MatchString(line) {
+				submatch := re.FindStringSubmatch(line)
+				names := re.SubexpNames()
 
-		// check if line is relevant
-		if re.MatchString(line) {
-			submatch := re.FindStringSubmatch(line)
-			names := re.SubexpNames()
+				// len of submatch and names should be same
+				if len(submatch) == len(names) {
 
-			// len of submatch and names should be same
-			if len(submatch) == len(names) {
-
-				// add all founded fields to record
-				for i := 1; i < len(names); i++ {
-					tmpRecord[names[i]] = append(tmpRecord[names[i]], submatch[i])
-				}
-			}
-
-			// if processCommand has Record, add tempRecord to Record
-			if processCommand.Command.Record != "" {
-				if record[processCommand.Command.Record] == nil {
-					record[processCommand.Command.Record] = map[string]*Column{}
-				}
-				// iterate all keys of tmpRecord and append to destination-record
-				for k, v := range tmpRecord {
-					// create new Column if nil
-					if record[processCommand.Command.Record][k] == nil {
-						record[processCommand.Command.Record][k] = &Column{}
+					// add all founded fields to record
+					for i := 1; i < len(names); i++ {
+						tmpRecord[names[i]] = submatch[i]
 					}
-					// add values of tmpRecord
-					record[processCommand.Command.Record][k].Entries =
-						append(record[processCommand.Command.Record][k].Entries, v...)
 				}
-				// clear tempRecord
-				tmpRecord = map[string][]interface{}{}
-			}
 
-			// increase the commandIndex to get next round the next command
-			commandIndex++
+				// if processCommand has Record, add tempRecord to Record
+				if processCommand.Command.Record == "Record" {
+					// iterate all keys of record and add from tmpRecord
+					for colHeader := range record {
+						if val, ok := tmpRecord[colHeader]; ok {
+							record[colHeader].Entries = append(record[colHeader].Entries, val)
+						} else {
+							record[colHeader].Entries = append(record[colHeader].Entries, "")
+						}
+					}
+					// clear tempRecord
+					tmpRecord = map[string]interface{}{}
+				}
+			}
 		}
 
 	}

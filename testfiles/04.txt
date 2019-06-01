@@ -1,0 +1,10 @@
+Value Slot (\d)
+Value State (\w+)
+Value Temperature (\d+)
+Value DRAM (\d+)
+Value Buffer (\d+)
+
+Start
+  # We can't use .* for unused placeholders, as greedy matching will break it.
+  ^\s+${Slot}\s+${State}\s+${Temperature}\s+\d+\s+\d+\s+${DRAM}\s+\d+\s+${Buffer} -> Record
+  ^\s+${Slot}\s+${State} -> Record

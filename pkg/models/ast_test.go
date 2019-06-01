@@ -29,7 +29,7 @@ func TestASTMatchingLine(t *testing.T) {
 		t.Error(err)
 	}
 
-	if line != "./(?P<MyVal1>.*)" {
+	if line != "./(?P<MyVal1>.*)$" {
 		t.Errorf("matchingline is not expected. It is: %s", line)
 	}
 }

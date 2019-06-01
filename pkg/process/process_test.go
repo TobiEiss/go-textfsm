@@ -51,6 +51,15 @@ func TestProcessAST(t *testing.T) {
 				"Temperature": process.Column{Entries: []interface{}{"24", "25", "24", "23"}},
 			},
 		},
+		{
+			TemplateFilePath: "/../../testfiles/04.txt",
+			SourceFilePath:   "/../../testfiles/src04.txt",
+			CorrectRecord: map[string]process.Column{
+				"Slot":        process.Column{Entries: []interface{}{"0", "1", "2", "3", "4", "5", "6", "7"}},
+				"State":       process.Column{Entries: []interface{}{"Online", "Online", "Online", "Online", "Empty", "Empty", "Empty", "Empty"}},
+				"Temperature": process.Column{Entries: []interface{}{"24", "25", "24", "23", "", "", "", ""}},
+			},
+		},
 	}
 
 	// iterate all test.cases
@@ -82,15 +91,17 @@ func TestProcessAST(t *testing.T) {
 		// check
 		for k, v := range test.CorrectRecord {
 			// check if entries are available
-			if len(record["Record"][k].Entries) < 1 {
-				t.Errorf("%d failed: Values for '%s' are missing", index, k)
+			if len(record[k].Entries) < len(v.Entries) {
+				t.Errorf("%d failed: len of values (%d) for '%s' are less than expected (%d)",
+					index, len(record[k].Entries), k, len(v.Entries))
+				break
 			}
 
 			// check if erntries are correct
 			for entryIndex, entrie := range v.Entries {
-				if record["Record"][k].Entries[entryIndex] != entrie {
+				if record[k].Entries[entryIndex] != entrie {
 					t.Errorf("%d failed: Field '%s' Value '%s' is not equal expected '%+v'",
-						index, k, record["Record"][k].Entries[entryIndex], entrie)
+						index, k, record[k].Entries[entryIndex], entrie)
 				}
 			}
 		}

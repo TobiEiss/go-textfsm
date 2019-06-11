@@ -60,6 +60,16 @@ func TestProcessAST(t *testing.T) {
 				"Temperature": process.Column{Entries: []interface{}{"24", "25", "24", "23", "", "", "", ""}},
 			},
 		},
+		{
+			TemplateFilePath: "/../../testfiles/05.txt",
+			SourceFilePath:   "/../../testfiles/src05.txt",
+			CorrectRecord: map[string]process.Column{
+				"Chassis":     process.Column{Entries: []interface{}{"lcc0-re0", "", "", "", "", "", "", "", "lcc1-re1", "", "", "", "", "", "", ""}},
+				"Slot":        process.Column{Entries: []interface{}{"0", "1", "2", "3", "4", "5", "6", "7", "0", "1", "2", "3", "4", "5", "6", "7"}},
+				"State":       process.Column{Entries: []interface{}{"Online", "Online", "Online", "Online", "Empty", "Empty", "Empty", "Empty", "Online", "Online", "Online", "Online", "Online", "Empty", "Empty"}},
+				"Temperature": process.Column{Entries: []interface{}{"24", "23", "23", "21", "", "", "", "", "20", "20", "21", "20", "18", "", "", ""}},
+			},
+		},
 	}
 
 	// iterate all test.cases

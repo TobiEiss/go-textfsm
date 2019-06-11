@@ -1,0 +1,25 @@
+lcc0-re0:
+--------------------------------------------------------------------------
+                     Temp  CPU Utilization (%)   Memory    Utilization (%)
+Slot State            (C)  Total  Interrupt      DRAM (MB) Heap     Buffer
+  0  Online            24      8          1       512        16         52
+  1  Online            23      7          1       256        36         53
+  2  Online            23      5          1       256        36         49
+  3  Online            21      7          1       256        36         49
+  4  Empty
+  5  Empty
+  6  Empty
+  7  Empty
+
+lcc1-re1:
+--------------------------------------------------------------------------
+                     Temp  CPU Utilization (%)   Memory    Utilization (%)
+Slot State            (C)  Total  Interrupt      DRAM (MB) Heap     Buffer
+  0  Online            20      9          1       256        36         50
+  1  Online            20     13          0       256        36         49
+  2  Online            21      6          1       256        36         49
+  3  Online            20      6          0       256        36         49
+  4  Online            18      5          0       256        35         49
+  5  Empty
+  6  Empty
+  7  Empty

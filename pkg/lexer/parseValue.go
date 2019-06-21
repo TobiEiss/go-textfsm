@@ -6,11 +6,15 @@ import (
 
 func (parser *Parser) parseVal() (*models.AbstractStatement, error) {
 	statement := &models.AbstractStatement{}
-	// Next have to be FILLDOWN or a variable name
+	// Next have to be FILLDOWN, LIST or a variable name
 	identToken, variable := parser.scanIgnoreWhitespace()
 	// If its FILLDOWN -> next ident
 	if identToken == FILLDOWN {
 		statement.Filldown = true
+		identToken, variable = parser.scanIgnoreWhitespace()
+	}
+	if identToken == LIST{
+		statement.List = true
 		identToken, variable = parser.scanIgnoreWhitespace()
 	}
 	if identToken == EOF {

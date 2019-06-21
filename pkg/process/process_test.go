@@ -2,6 +2,7 @@ package process_test
 
 import (
 	"path/filepath"
+	"reflect"
 	"runtime"
 	"testing"
 
@@ -80,6 +81,15 @@ func TestProcessAST(t *testing.T) {
 				"Temperature": process.Column{Entries: []interface{}{"24", "23", "23", "21", "", "", "", "", "20", "20", "21", "20", "18", "", "", ""}},
 			},
 		},
+		{
+			TemplateFilePath: "/../../testfiles/07.txt",
+			SourceFilePath:   "/../../testfiles/src07.txt",
+			CorrectRecord: map[string]process.Column{
+				"Name":     process.Column{Entries: []interface{}{"Gi0/1", "Gi0/2", "Gi0/3", "Gi0/4"}},
+				"Status":   process.Column{Entries: []interface{}{"up", "down", "down", "up"}},
+				"Protocol": process.Column{Entries: []interface{}{[]string{"tcp", "udp", "arp"}, []string{"https", "udp", "bgp"}, []string{"tcp", "udp", "ospf"}, []string{"ip", "http", "rip"}}},
+			},
+		},
 	}
 
 	// iterate all test.cases
@@ -119,12 +129,32 @@ func TestProcessAST(t *testing.T) {
 
 			// check if erntries are correct
 			for entryIndex, entrie := range v.Entries {
-				if record[k].Entries[entryIndex] != entrie {
-					t.Errorf("%d failed: Field '%s' Value '%s' is not equal expected '%+v'",
-						index, k, record[k].Entries[entryIndex], entrie)
+				if reflect.TypeOf(entrie).Kind() == reflect.Slice {
+					if !isEqual(record[k].Entries[entryIndex].([]string),entrie.([]string)){
+						t.Errorf("%d failed: Field '%s' Value '%s' is not equal expected '%+v'",
+							index, k, record[k].Entries[entryIndex], entrie)
+
+					}
+				} else {
+					if record[k].Entries[entryIndex] != entrie {
+						t.Errorf("%d failed: Field '%s' Value '%s' is not equal expected '%+v'",
+							index, k, record[k].Entries[entryIndex], entrie)
+					}
 				}
 			}
 		}
 	}
 
+}
+
+func isEqual(a, b []string) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i, v := range a {
+		if v != b[i] {
+			return false
+		}
+	}
+	return true
 }

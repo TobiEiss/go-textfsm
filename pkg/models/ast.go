@@ -15,11 +15,13 @@ type AST struct {
 type Val struct {
 	Variable string
 	Regex    string
+	Filldown bool
 }
 
 // Cmd is one statement after keyword "Start"
 type Cmd struct {
 	Actions []Action
+	Vals    []*Val
 	Record  string
 }
 
@@ -35,11 +37,13 @@ func (ast AST) GetValForValName(valName string) *Val {
 
 // CreateMatchingLine creates a regex that have to match to a line
 func (ast AST) CreateMatchingLine(cmd Cmd) (matchingLine string, err error) {
+	cmd.Vals = []*Val{}
 	// iterate all actions
 	for _, action := range cmd.Actions {
 		if action.Value != "" {
 			if val := ast.GetValForValName(action.Value); val != nil {
 				matchingLine += fmt.Sprintf(`(?P<%s>%s)`, val.Variable, val.Regex)
+				cmd.Vals = append(cmd.Vals, val)
 				continue
 			}
 			return matchingLine, errors.New("Can't find val for ValName" + action.Value)

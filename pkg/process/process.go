@@ -90,9 +90,11 @@ func (process process) Do(in chan string) map[string]*Column {
 						} else {
 							record[colHeader].Entries = append(record[colHeader].Entries, "")
 						}
+						if val := process.ast.GetValForValName(colHeader); val != nil && !val.Filldown {
+							// clear tempRecord if not filldown-field
+							tmpRecord[colHeader] = ""
+						}
 					}
-					// clear tempRecord
-					tmpRecord = map[string]interface{}{}
 				}
 			}
 		}

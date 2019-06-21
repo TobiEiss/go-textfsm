@@ -16,6 +16,7 @@ type Val struct {
 	Variable string
 	Regex    string
 	Filldown bool
+	List     bool
 }
 
 // Cmd is one statement after keyword "Start"

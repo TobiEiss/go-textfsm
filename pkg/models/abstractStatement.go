@@ -23,6 +23,7 @@ type AbstractStatement struct {
 	Record       string
 	Comment      string
 	Filldown     bool
+	List         bool
 }
 
 // Action is one regex in a command
@@ -37,6 +38,7 @@ func (statement *AbstractStatement) Value() Val {
 		Variable: (*statement).VariableName,
 		Regex:    (*statement).Regex,
 		Filldown: (*statement).Filldown,
+		List:     (*statement).List,
 	}
 }
 

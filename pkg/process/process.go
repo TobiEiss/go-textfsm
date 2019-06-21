@@ -69,6 +69,7 @@ func (process process) Do(in chan string) map[string]*Column {
 
 			// check if line is relevant
 			if re.MatchString(line) {
+
 				submatch := re.FindStringSubmatch(line)
 				names := re.SubexpNames()
 
@@ -77,7 +78,18 @@ func (process process) Do(in chan string) map[string]*Column {
 
 					// add all founded fields to record
 					for i := 1; i < len(names); i++ {
-						tmpRecord[names[i]] = submatch[i]
+						if val := process.ast.GetValForValName(names[i]); val != nil {
+							if val.List {
+								if tmpRecord[names[i]] != nil && tmpRecord[names[i]] != "" {
+									tmpRecord[names[i]] = append(tmpRecord[names[i]].([]string), submatch[i])
+								} else {
+									tmpRecord[names[i]] = []string{submatch[i]}
+								}
+							} else {
+								tmpRecord[names[i]] = submatch[i]
+							}
+						}
+
 					}
 				}
 

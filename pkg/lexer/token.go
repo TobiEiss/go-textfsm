@@ -27,6 +27,7 @@ const (
 	DOLAR              // $
 	BIGGER             // >
 	HASH               // #
+	PIPE               // |
 
 	VALUE
 	START
@@ -54,6 +55,7 @@ var MiscCharMap = map[rune]Token{
 	'$':  DOLAR,
 	'>':  BIGGER,
 	'#':  HASH,
+	'|':  PIPE,
 }
 
 // KeyWordMap is a map from the string to the Token

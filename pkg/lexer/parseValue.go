@@ -1,11 +1,18 @@
 package lexer
 
-import "github.com/TobiEiss/go-textfsm/pkg/models"
+import (
+	"github.com/TobiEiss/go-textfsm/pkg/models"
+)
 
 func (parser *Parser) parseVal() (*models.AbstractStatement, error) {
 	statement := &models.AbstractStatement{}
-	// Next have to be a variable name
+	// Next have to be FILLDOWN or a variable name
 	identToken, variable := parser.scanIgnoreWhitespace()
+	// If its FILLDOWN -> next ident
+	if identToken == FILLDOWN {
+		statement.Filldown = true
+		identToken, variable = parser.scanIgnoreWhitespace()
+	}
 	if identToken == EOF {
 		return nil, parser.createError(MISSINGARGUMENT)
 	}

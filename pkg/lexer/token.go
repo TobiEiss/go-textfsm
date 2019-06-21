@@ -31,6 +31,7 @@ const (
 
 	VALUE
 	START
+	FILLDOWN
 )
 
 // eof represents a marker rune for the end of the reader.
@@ -60,6 +61,7 @@ var MiscCharMap = map[rune]Token{
 
 // KeyWordMap is a map from the string to the Token
 var KeyWordMap = map[string]Token{
-	"Value": VALUE,
-	"Start": START,
+	"Value":    VALUE,
+	"Start":    START,
+	"Filldown": FILLDOWN,
 }

@@ -1,0 +1,5 @@
+name       status           Protocols
+Gi0/1        up            tcp   udp   arp
+Gi0/2        down          https udp   bgp
+Gi0/3        down          tcp   udp   ospf
+Gi0/4        up            ip    http  rip

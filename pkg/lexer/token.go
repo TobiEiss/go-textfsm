@@ -33,6 +33,7 @@ const (
 	START
 	FILLDOWN
 	LIST
+	RECORD
 )
 
 // eof represents a marker rune for the end of the reader.
@@ -66,4 +67,5 @@ var KeyWordMap = map[string]Token{
 	"Start":    START,
 	"Filldown": FILLDOWN,
 	"List":     LIST,
+	"Record":   RECORD,
 }

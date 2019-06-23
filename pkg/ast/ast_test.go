@@ -48,9 +48,9 @@ func TestAST(t *testing.T) {
 		}
 
 		// check commands
-		if len(ast.Commands) != test.ExpectedCommands {
+		if len(ast.States[0].Commands) != test.ExpectedCommands {
 			t.Errorf("%d failed: len of ast.commands '%d' is not equal expected len '%d'",
-				index, len(ast.Commands), test.ExpectedCommands)
+				index, len(ast.States[0].Commands), test.ExpectedCommands)
 		}
 	}
 }
@@ -95,16 +95,16 @@ func TestParseCommands(t *testing.T) {
 		}
 
 		// check len of actions
-		if len(ast.Commands[0].Actions) != len(test.ExpectedActions) {
+		if len(ast.States[0].Commands[0].Actions) != len(test.ExpectedActions) {
 			t.Errorf("%d failed: len of actions '%d' is not equal expected len '%d'",
-				index, len(ast.Commands[0].Actions), len(test.ExpectedActions))
+				index, len(ast.States[0].Commands[0].Actions), len(test.ExpectedActions))
 		}
 
 		// check actions
 		for i := 0; i < len(test.ExpectedActions); i++ {
-			if test.ExpectedActions[i] != ast.Commands[0].Actions[i] {
+			if test.ExpectedActions[i] != ast.States[0].Commands[0].Actions[i] {
 				t.Errorf("%d failed: action '%s' is not equal to expected Action '%s'",
-					index, test.ExpectedActions[i], ast.Commands[0].Actions[i])
+					index, test.ExpectedActions[i], ast.States[0].Commands[0].Actions[i])
 			}
 		}
 	}

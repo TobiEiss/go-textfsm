@@ -9,10 +9,14 @@ import (
 func CreateAST(lines chan string) (models.AST, error) {
 	// create ast
 	ast := models.AST{
-		Commands: []models.Cmd{},
-		Vals:     []models.Val{},
+		States: []models.State{},
+		Vals:   []models.Val{},
 	}
 
+	// this is the "current recording function"
+	currentState := models.State{Commands: []models.Cmd{}}
+
+	// iterate all lines
 	for {
 		// get next line
 		line, ok := <-lines
@@ -33,10 +37,18 @@ func CreateAST(lines chan string) (models.AST, error) {
 			case models.Value:
 				ast.Vals = append(ast.Vals, as.Value())
 			case models.Command:
-				ast.Commands = append(ast.Commands, as.Command())
+				currentState.Commands = append(currentState.Commands, as.Command())
+			case models.StateHeader:
+				if len(currentState.Commands) > 0 {
+					ast.States = append(ast.States, currentState)
+				}
+				currentState = models.State{Commands: []models.Cmd{}, Name: as.StateName}
 			}
 		}
 	}
+
+	// finally add currentState to states
+	ast.States = append(ast.States, currentState)
 
 	return ast, nil
 }

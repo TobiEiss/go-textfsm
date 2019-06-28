@@ -7,8 +7,8 @@ import (
 
 // AST is the abstract command tree
 type AST struct {
-	Vals     []Val
-	Commands []Cmd
+	Vals   []Val
+	States []State
 }
 
 // Val represent a varible like "Value Year (\d+)"
@@ -16,13 +16,21 @@ type Val struct {
 	Variable string
 	Regex    string
 	Filldown bool
+	List     bool
+}
+
+// State represent a state like "Start"
+type State struct {
+	Name     string
+	Commands []Cmd
 }
 
 // Cmd is one statement after keyword "Start"
 type Cmd struct {
-	Actions []Action
-	Vals    []*Val
-	Record  string
+	Actions   []Action
+	Vals      []*Val
+	Record    bool
+	StateCall string
 }
 
 // GetValForValName searches a val for a valName

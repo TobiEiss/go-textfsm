@@ -1,6 +1,8 @@
 package lexer
 
-import "github.com/TobiEiss/go-textfsm/pkg/models"
+import (
+	"github.com/TobiEiss/go-textfsm/pkg/models"
+)
 
 func (parser *Parser) parseCmd() (*models.AbstractStatement, error) {
 	statement := &models.AbstractStatement{Type: models.Command, Actions: []models.Action{}}
@@ -74,19 +76,15 @@ func (parser *Parser) parseCmd() (*models.AbstractStatement, error) {
 				statement.Actions = statement.Actions[:len(statement.Actions)-1]
 			}
 
-			// now follows the record-name
-			recordname := ""
 			for {
 				token, val := parser.scan()
 				switch token {
-				case WHITESPACE:
-					statement.Record = recordname
-					return statement, nil
+				case IDENT:
+					statement.StateCall = val
+				case RECORD:
+					statement.Record = true
 				case EOF:
-					statement.Record = recordname
 					return statement, nil
-				default:
-					recordname += val
 				}
 			}
 		case WHITESPACE:

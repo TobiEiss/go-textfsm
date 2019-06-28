@@ -12,6 +12,8 @@ const (
 	Command
 	// Comment is a statement to ignore
 	Comment
+	// StateHeader is the "Header" of a new "state"
+	StateHeader
 )
 
 // AbstractStatement is the raw parsed statement
@@ -20,9 +22,12 @@ type AbstractStatement struct {
 	VariableName string
 	Regex        string
 	Actions      []Action
-	Record       string
+	Record       bool
 	Comment      string
 	Filldown     bool
+	List         bool
+	StateName    string
+	StateCall    string
 }
 
 // Action is one regex in a command
@@ -37,13 +42,15 @@ func (statement *AbstractStatement) Value() Val {
 		Variable: (*statement).VariableName,
 		Regex:    (*statement).Regex,
 		Filldown: (*statement).Filldown,
+		List:     (*statement).List,
 	}
 }
 
 // Command creates a Cmd from AbstractStatemente
 func (statement *AbstractStatement) Command() Cmd {
 	return Cmd{
-		Actions: statement.Actions,
-		Record:  statement.Record,
+		Actions:   statement.Actions,
+		Record:    statement.Record,
+		StateCall: statement.StateCall,
 	}
 }

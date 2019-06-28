@@ -1,0 +1,6 @@
+Value Name          (\S+)
+Value Status        (down|up)
+Value List Protocol (\S+)
+
+Start
+  ^${Name}\s+${Status}\s+${Protocol}\s+${Protocol}\s+${Protocol} -> Record

@@ -12,8 +12,8 @@ type Process interface {
 }
 
 type process struct {
-	ast      models.AST
-	commands []processCommand
+	ast    models.AST
+	states []state
 }
 
 type commandPart struct {
@@ -26,18 +26,27 @@ type processCommand struct {
 	Command      models.Cmd
 }
 
+type state struct {
+	processCommands []processCommand
+	state           models.State
+}
+
 // NewProcess create a new implementation of Process
 func NewProcess(ast models.AST) (Process, error) {
-	process := &process{commands: []processCommand{}, ast: ast}
+	process := &process{states: []state{}, ast: ast}
 
 	// calculate matchingLine
-	for _, command := range ast.Commands {
-		matchingLine, err := ast.CreateMatchingLine(command)
-		if err != nil {
-			return nil, err
+	for _, st := range ast.States {
+		currentState := state{state: st}
+		for _, command := range st.Commands {
+			matchingLine, err := ast.CreateMatchingLine(command)
+			if err != nil {
+				return nil, err
+			}
+			currentState.processCommands = append(currentState.processCommands,
+				processCommand{MatchingLine: matchingLine, Command: command})
 		}
-		process.commands = append(process.commands,
-			processCommand{MatchingLine: matchingLine, Command: command})
+		process.states = append(process.states, currentState)
 	}
 
 	return process, nil
@@ -53,9 +62,29 @@ func (process process) Do(in chan string) map[string]*Column {
 		record[colHeader.Variable] = &Column{}
 	}
 
-	// temp-record
-	tmpRecord := map[string]interface{}{}
+	// machineState is one state in the statemachine
+	type machineState struct {
+		tmpRecord map[string]interface{}
+		state     state
+	}
+	// statemachine is <nameOfState><machineState>. All machineStates which are in the statemachine are active
+	statemachine := map[string]machineState{}
 
+	// add "start"-states to statemachine
+	findStateAndAddToMachine := func(stateName string, tmpRecord map[string]interface{}) {
+		for _, state := range process.states {
+			if state.state.Name == stateName {
+				statemachine[state.state.Name] = machineState{tmpRecord: tmpRecord, state: state}
+				break
+			}
+		}
+	}
+	findStateAndAddToMachine("Start", map[string]interface{}{})
+
+	// keep last added record in mind
+	lastAddedRecord := map[string]interface{}{}
+
+	// iterate lines
 	for {
 		// get next line
 		line, ok := <-in
@@ -63,37 +92,65 @@ func (process process) Do(in chan string) map[string]*Column {
 			break
 		}
 
-		for _, processCommand := range process.commands {
-			// check one command matches to line
-			re := regexp.MustCompile(processCommand.MatchingLine)
+		// iterate all activestates
+		for stateName, activeState := range statemachine {
+			// iterate commands of a active state
+			for _, processCommand := range activeState.state.processCommands {
+				// check one command matches to line
+				re := regexp.MustCompile(processCommand.MatchingLine)
 
-			// check if line is relevant
-			if re.MatchString(line) {
-				submatch := re.FindStringSubmatch(line)
-				names := re.SubexpNames()
+				// check if line is relevant
+				if re.MatchString(line) {
 
-				// len of submatch and names should be same
-				if len(submatch) == len(names) {
+					submatch := re.FindStringSubmatch(line)
+					names := re.SubexpNames()
 
-					// add all founded fields to record
-					for i := 1; i < len(names); i++ {
-						tmpRecord[names[i]] = submatch[i]
+					// len of submatch and names should be same
+					if len(submatch) == len(names) {
+
+						// add all founded fields to record
+						for i := 1; i < len(names); i++ {
+							if val := process.ast.GetValForValName(names[i]); val != nil {
+								if val.List {
+									if activeState.tmpRecord[names[i]] != nil && activeState.tmpRecord[names[i]] != "" {
+										activeState.tmpRecord[names[i]] = append(activeState.tmpRecord[names[i]].([]string), submatch[i])
+									} else {
+										activeState.tmpRecord[names[i]] = []string{submatch[i]}
+									}
+								} else {
+									activeState.tmpRecord[names[i]] = submatch[i]
+								}
+							}
+
+						}
 					}
-				}
 
-				// if processCommand has Record, add tempRecord to Record
-				if processCommand.Command.Record == "Record" {
-					// iterate all keys of record and add from tmpRecord
-					for colHeader := range record {
-						if val, ok := tmpRecord[colHeader]; ok {
-							record[colHeader].Entries = append(record[colHeader].Entries, val)
-						} else {
-							record[colHeader].Entries = append(record[colHeader].Entries, "")
+					// if processCommand has Record, add tempRecord to Record
+					if processCommand.Command.Record {
+						// iterate all keys of record and add from tmpRecord
+						for colHeader := range record {
+							if val, ok := activeState.tmpRecord[colHeader]; ok {
+								record[colHeader].Entries = append(record[colHeader].Entries, val)
+							} else {
+								record[colHeader].Entries = append(record[colHeader].Entries, "")
+							}
+							if val := process.ast.GetValForValName(colHeader); val != nil && !val.Filldown {
+								// clear tempRecord if not filldown-field
+								activeState.tmpRecord[colHeader] = ""
+								// this is lastaAddedRecord for next state (respect Filldown)
+								lastAddedRecord = activeState.tmpRecord
+							}
 						}
-						if val := process.ast.GetValForValName(colHeader); val != nil && !val.Filldown {
-							// clear tempRecord if not filldown-field
-							tmpRecord[colHeader] = ""
-						}
+					}
+
+					// if state ends
+					if processCommand.Command.StateCall == "Start" {
+						delete(statemachine, stateName)
+					}
+
+					// if state calls a new state
+					if processCommand.Command.StateCall != "" {
+						findStateAndAddToMachine(processCommand.Command.StateCall, lastAddedRecord)
 					}
 				}
 			}

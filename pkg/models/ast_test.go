@@ -14,17 +14,21 @@ func TestASTMatchingLine(t *testing.T) {
 				Variable: "MyVal1",
 			},
 		},
-		Commands: []models.Cmd{
+		States: []models.State{
 			{
-				Actions: []models.Action{
-					{Regex: "./"},
-					{Value: "MyVal1"},
+				Commands: []models.Cmd{
+					{
+						Actions: []models.Action{
+							{Regex: "./"},
+							{Value: "MyVal1"},
+						},
+					},
 				},
 			},
 		},
 	}
 
-	line, err := ast.CreateMatchingLine(ast.Commands[0])
+	line, err := ast.CreateMatchingLine(ast.States[0].Commands[0])
 	if err != nil {
 		t.Error(err)
 	}

@@ -1,0 +1,13 @@
+Value Protocol (\S)
+Value Type (\S\S)
+Value Prefix (\S+)
+Value Gateway (\S+)
+Value Distance (\d+)
+Value Metric (\d+)
+Value LastChange (\S+)
+
+Start
+  ^.*----- -> Routes
+
+Routes
+  ^  ${Protocol} ${Type} ${Prefix}\s+via ${Gateway}\s+${Distance}/${Metric}\s+${LastChange} -> Record

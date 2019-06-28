@@ -90,6 +90,32 @@ func TestProcessAST(t *testing.T) {
 				"Protocol": process.Column{Entries: []interface{}{[]string{"tcp", "udp", "arp"}, []string{"https", "udp", "bgp"}, []string{"tcp", "udp", "ospf"}, []string{"ip", "http", "rip"}}},
 			},
 		},
+		{
+			TemplateFilePath: "/../../testfiles/08.txt",
+			SourceFilePath:   "/../../testfiles/src08.txt",
+			CorrectRecord: map[string]process.Column{
+				"Protocol":   process.Column{Entries: []interface{}{"B", "B", "B", "B", "B"}},
+				"Type":       process.Column{Entries: []interface{}{"EX", "IN", "IN", "IN", "IN"}},
+				"Prefix":     process.Column{Entries: []interface{}{"0.0.0.0/0", "192.0.2.76/30", "192.0.2.204/30", "192.0.2.80/30", "192.0.2.208/30"}},
+				"Gateway":    process.Column{Entries: []interface{}{"192.0.2.73", "203.0.113.183", "203.0.113.183", "203.0.113.183", "203.0.113.183"}},
+				"Distance":   process.Column{Entries: []interface{}{"20", "200", "200", "200", "200"}},
+				"Metric":     process.Column{Entries: []interface{}{"100", "100", "100", "100", "100"}},
+				"LastChange": process.Column{Entries: []interface{}{"4w0d", "4w2d", "4w2d", "4w2d", "4w2d"}},
+			},
+		},
+		{
+			TemplateFilePath: "/../../testfiles/09.txt",
+			SourceFilePath:   "/../../testfiles/src09.txt",
+			CorrectRecord: map[string]process.Column{
+				"Protocol":   process.Column{Entries: []interface{}{"B", "B", "B", "B", "B"}},
+				"Type":       process.Column{Entries: []interface{}{"EX", "IN", "IN", "IN", "IN"}},
+				"Prefix":     process.Column{Entries: []interface{}{"0.0.0.0/0", "192.0.2.76/30", "192.0.2.204/30", "192.0.2.80/30", "192.0.2.208/30"}},
+				"Gateway":    process.Column{Entries: []interface{}{[]string{"192.0.2.73"}, []string{"203.0.113.183"}, []string{"203.0.113.183"}, []string{"203.0.113.183"}, []string{"203.0.113.183"}}},
+				"Distance":   process.Column{Entries: []interface{}{"20", "200", "200", "200", "200"}},
+				"Metric":     process.Column{Entries: []interface{}{"100", "100", "100", "100", "100"}},
+				"LastChange": process.Column{Entries: []interface{}{"4w0d", "4w2d", "4w2d", "4w2d", "4w2d"}},
+			},
+		},
 	}
 
 	// iterate all test.cases
@@ -130,7 +156,7 @@ func TestProcessAST(t *testing.T) {
 			// check if erntries are correct
 			for entryIndex, entrie := range v.Entries {
 				if reflect.TypeOf(entrie).Kind() == reflect.Slice {
-					if !isEqual(record[k].Entries[entryIndex].([]string),entrie.([]string)){
+					if !isEqual(record[k].Entries[entryIndex].([]string), entrie.([]string)) {
 						t.Errorf("%d failed: Field '%s' Value '%s' is not equal expected '%+v'",
 							index, k, record[k].Entries[entryIndex], entrie)
 

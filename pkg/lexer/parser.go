@@ -1,7 +1,7 @@
 package lexer
 
 import (
-	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/TobiEiss/go-textfsm/pkg/models"
@@ -9,8 +9,9 @@ import (
 
 // Parser represents a parser.
 type Parser struct {
-	scanner *Scanner
-	buf     struct {
+	currentline string // only for error-logging
+	scanner     *Scanner
+	buf         struct {
 		token      Token  // last read token
 		literal    string // last read literal
 		buffersize int    // buffer size (max=1)
@@ -20,13 +21,13 @@ type Parser struct {
 // NewParser returns a new instance of Parser.
 func NewParser(val string) *Parser {
 	reader := strings.NewReader(val)
-	return &Parser{scanner: NewScanner(reader)}
+	return &Parser{scanner: NewScanner(reader), currentline: val}
 }
 
 // ParseStatement parses a statement.
 func (parser *Parser) ParseStatement() (*models.AbstractStatement, error) {
 	// Find first Token
-	token, _ := parser.scanIgnoreWhitespace()
+	token, val := parser.scanIgnoreWhitespace()
 
 	// check if this a keyword
 	if isTokenAKeyWord(token) {
@@ -35,7 +36,7 @@ func (parser *Parser) ParseStatement() (*models.AbstractStatement, error) {
 		case VALUE:
 			return parser.parseVal()
 		case START:
-			return &models.AbstractStatement{Type: models.Start}, nil
+			return &models.AbstractStatement{Type: models.StateHeader, StateName: "Start"}, nil
 		}
 		return nil, parser.createError(ILLEGALTOKEN)
 	}
@@ -50,12 +51,17 @@ func (parser *Parser) ParseStatement() (*models.AbstractStatement, error) {
 		return parser.parseCmmt()
 	}
 
+	// should be an state-header
+	if token == IDENT {
+		return parser.parseStateHeader(val)
+	}
+
 	// if this is a nil-line -> continue
 	if token == EOF {
 		return nil, nil
 	}
 
-	return nil, errors.New("Can't parse")
+	return nil, fmt.Errorf("Can't parse line: %s", parser.currentline)
 }
 
 // scanIgnoreWhitespace scans the next non-whitespace token.

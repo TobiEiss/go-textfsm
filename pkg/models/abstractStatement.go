@@ -26,6 +26,7 @@ type AbstractStatement struct {
 	Comment      string
 	Filldown     bool
 	List         bool
+	Required     bool
 	StateName    string
 	StateCall    string
 }
@@ -36,17 +37,18 @@ type Action struct {
 	Regex string
 }
 
-// Value creates a Val from AbstractStatemente
+// Value creates a Val from AbstractStatement
 func (statement *AbstractStatement) Value() Val {
 	return Val{
 		Variable: (*statement).VariableName,
 		Regex:    (*statement).Regex,
 		Filldown: (*statement).Filldown,
 		List:     (*statement).List,
+		Required: (*statement).Required,
 	}
 }
 
-// Command creates a Cmd from AbstractStatemente
+// Command creates a Cmd from AbstractStatement
 func (statement *AbstractStatement) Command() Cmd {
 	return Cmd{
 		Actions:   statement.Actions,

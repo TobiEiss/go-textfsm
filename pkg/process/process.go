@@ -107,7 +107,6 @@ func (process process) Do(in chan string) map[string]*Column {
 
 					// len of submatch and names should be same
 					if len(submatch) == len(names) {
-
 						// add all founded fields to record
 						for i := 1; i < len(names); i++ {
 							if val := process.ast.GetValForValName(names[i]); val != nil {
@@ -157,5 +156,33 @@ func (process process) Do(in chan string) map[string]*Column {
 		}
 
 	}
+	checkRequired(record, process)
 	return record
+}
+
+// check if all required Fields have Values,
+// if not remove the the record from records.
+func checkRequired(record map[string]*Column, proc process) {
+	var removeIndices []int
+	for name, column := range record {
+		val := proc.ast.GetValForValName(name)
+		if val.Required {
+			for idx, value := range column.Entries {
+				if value == "" {
+					if removeIndices == nil {
+						removeIndices = []int{idx}
+					} else {
+						removeIndices = append(removeIndices, idx)
+					}
+				}
+			}
+		}
+	}
+	for _, idx := range removeIndices {
+		for _, column := range record {
+			column.Entries = append(column.Entries[:idx], column.Entries[idx+1:]...)
+
+		}
+	}
+
 }

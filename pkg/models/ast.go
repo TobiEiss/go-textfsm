@@ -17,6 +17,7 @@ type Val struct {
 	Regex    string
 	Filldown bool
 	List     bool
+	Required bool
 }
 
 // State represent a state like "Start"

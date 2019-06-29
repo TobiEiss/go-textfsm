@@ -1,0 +1,10 @@
+Value Iface         (\S+)
+Value Name (\S+)
+Value Status        (down|up)
+Value Error         (.*)
+
+Start
+  ^Interface:\s+${Iface}
+  ^\s+name\s+"${Name}"
+  ^\s+status\s+${Status}
+  ^\s+errors:\s+${Error} -> Record

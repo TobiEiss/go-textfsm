@@ -116,6 +116,26 @@ func TestProcessAST(t *testing.T) {
 				"LastChange": process.Column{Entries: []interface{}{"4w0d", "4w2d", "4w2d", "4w2d", "4w2d"}},
 			},
 		},
+		{
+			TemplateFilePath: "/../../testfiles/10a.txt",
+			SourceFilePath:   "/../../testfiles/src10.txt",
+			CorrectRecord: map[string]process.Column{
+				"Iface":  process.Column{Entries: []interface{}{"Gi0/1", "Gi0/2", "Gi0/3", "Gi0/6"}},
+				"Name":   process.Column{Entries: []interface{}{"wan1", "wan2", "inside", "dmz"}},
+				"Status": process.Column{Entries: []interface{}{"up", "down", "down", "down"}},
+				"Error":  process.Column{Entries: []interface{}{"output Queue errors", "input Queue errors", "input Queue errors", "input Queue errors"}},
+			},
+		},
+		{
+			TemplateFilePath: "/../../testfiles/10b.txt",
+			SourceFilePath:   "/../../testfiles/src10.txt",
+			CorrectRecord: map[string]process.Column{
+				"Iface":  process.Column{Entries: []interface{}{"Gi0/1", "Gi0/2", "Gi0/3", "Gi0/4", "Gi0/6"}},
+				"Name":   process.Column{Entries: []interface{}{"wan1", "wan2", "inside", "", "dmz"}},
+				"Status": process.Column{Entries: []interface{}{"up", "down", "down", "up", "down"}},
+				"Error":  process.Column{Entries: []interface{}{"output Queue errors", "input Queue errors", "input Queue errors", "output Queue errors", "input Queue errors"}},
+			},
+		},
 	}
 
 	// iterate all test.cases
@@ -153,18 +173,18 @@ func TestProcessAST(t *testing.T) {
 				break
 			}
 
-			// check if erntries are correct
-			for entryIndex, entrie := range v.Entries {
-				if reflect.TypeOf(entrie).Kind() == reflect.Slice {
-					if !isEqual(record[k].Entries[entryIndex].([]string), entrie.([]string)) {
+			// check if entries are correct
+			for entryIndex, entry := range v.Entries {
+				if reflect.TypeOf(entry).Kind() == reflect.Slice {
+					if !isEqual(record[k].Entries[entryIndex].([]string), entry.([]string)) {
 						t.Errorf("%d failed: Field '%s' Value '%s' is not equal expected '%+v'",
-							index, k, record[k].Entries[entryIndex], entrie)
+							index, k, record[k].Entries[entryIndex], entry)
 
 					}
 				} else {
-					if record[k].Entries[entryIndex] != entrie {
+					if record[k].Entries[entryIndex] != entry {
 						t.Errorf("%d failed: Field '%s' Value '%s' is not equal expected '%+v'",
-							index, k, record[k].Entries[entryIndex], entrie)
+							index, k, record[k].Entries[entryIndex], entry)
 					}
 				}
 			}

@@ -28,9 +28,7 @@ func TestProcessAST(t *testing.T) {
 			SourceFilePath:   "/../../testfiles/src01.txt",
 			ExpectedHeader:   []string{"Year", "Time", "Timezone", "Month", "MonthDay"},
 			ExpectedRows: [][]interface{}{
-				[]interface{}{
-					"2009", "18:42:41", "PST", "Feb", "8",
-				},
+				{"2009", "18:42:41", "PST", "Feb", "8"},
 			},
 		},
 		{

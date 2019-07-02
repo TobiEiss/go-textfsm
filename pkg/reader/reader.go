@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-// ReadLineByLine reads a file line by line
+// ReadLineByLine reads a file line by line with a channel
 func ReadLineByLine(path string, out chan string) {
 	// open file
 	file, err := os.Open(path)

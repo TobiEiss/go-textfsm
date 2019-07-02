@@ -6,10 +6,6 @@ import (
 	"github.com/TobiEiss/go-textfsm/pkg/models"
 )
 
-// Machine is the machine
-type Machine struct {
-}
-
 // MachineState is a state for a machine
 type MachineState struct {
 	tmpRow           []interface{}
@@ -43,14 +39,10 @@ func (machineState *MachineState) SetRowField(index int, field interface{}) {
 	machineState.mux.Unlock()
 }
 
-// AppendToRowField appends to specific field
-func (machineState *MachineState) AppendToRowField(index int, field interface{}) {
+// ClearRowField clears all fields
+func (machineState *MachineState) ClearRowField() {
 	machineState.mux.Lock()
-	if machineState.tmpRow[index] != nil && machineState.tmpRow[index] != "" {
-		machineState.tmpRow[index] = append(machineState.tmpRow[index].([]interface{}), field)
-	} else {
-		machineState.tmpRow[index] = []interface{}{field}
-	}
+	machineState.tmpRow = make([]interface{}, len(machineState.tmpRow))
 	machineState.mux.Unlock()
 }
 

@@ -2,6 +2,7 @@ package process_test
 
 import (
 	"path/filepath"
+	"reflect"
 	"runtime"
 	"testing"
 
@@ -51,106 +52,125 @@ func TestProcessAST(t *testing.T) {
 				{"3", "Online", "23"},
 			},
 		},
-		// {
-		// 	TemplateFilePath: "/../../testfiles/04.txt",
-		// 	SourceFilePath:   "/../../testfiles/src04.txt",
-		// 	ExpectedHeader:   []string{"Slot", "State", "Temperature"},
-		// 	ExpectedRows: [][]interface{}{
-		// 		{"0", "Online", "24"},
-		// 		{"1", "Online", "25"},
-		// 		{"2", "Online", "24"},
-		// 		{"3", "Online", "23"},
-		// 		{"4", "Empty", ""},
-		// 		{"5", "Empty", ""},
-		// 		{"6", "Empty", ""},
-		// 		{"7", "Empty", ""},
-		// 	},
-		// },
-		// {
-		// 	TemplateFilePath: "/../../testfiles/05.txt",
-		// 	SourceFilePath:   "/../../testfiles/src05.txt",
-		// 	ExpectedRows: [][]interface{}{
-		// 		{"lcc0-re0", "Online", "24"},
-		// 		{"1", "Online", "25"},
-		// 		{"2", "Online", "24"},
-		// 		{"3", "Online", "23"},
-		// 		{"4", "Empty", ""},
-		// 		{"5", "Empty", ""},
-		// 		{"6", "Empty", ""},
-		// 		{"7", "Empty", ""},
-		// 	},
-		// 	CorrectRecord: map[string]process.Column{
-		// 		"Chassis":     process.Column{Entries: []interface{}{"lcc0-re0", "", "", "", "", "", "", "", "lcc1-re1", "", "", "", "", "", "", ""}},
-		// 		"Slot":        process.Column{Entries: []interface{}{"0", "1", "2", "3", "4", "5", "6", "7", "0", "1", "2", "3", "4", "5", "6", "7"}},
-		// 		"State":       process.Column{Entries: []interface{}{"Online", "Online", "Online", "Online", "Empty", "Empty", "Empty", "Empty", "Online", "Online", "Online", "Online", "Online", "Empty", "Empty"}},
-		// 		"Temperature": process.Column{Entries: []interface{}{"24", "23", "23", "21", "", "", "", "", "20", "20", "21", "20", "18", "", "", ""}},
-		// 	},
-		// },
-		// {
-		// 	TemplateFilePath: "/../../testfiles/06.txt",
-		// 	SourceFilePath:   "/../../testfiles/src06.txt",
-		// 	CorrectRecord: map[string]process.Column{
-		// 		"Chassis":     process.Column{Entries: []interface{}{"lcc0-re0", "lcc0-re0", "lcc0-re0", "lcc0-re0", "lcc0-re0", "lcc0-re0", "lcc0-re0", "lcc0-re0", "lcc1-re1", "lcc1-re1", "lcc1-re1", "lcc1-re1", "lcc1-re1", "lcc1-re1", "lcc1-re1", "lcc1-re1"}},
-		// 		"Slot":        process.Column{Entries: []interface{}{"0", "1", "2", "3", "4", "5", "6", "7", "0", "1", "2", "3", "4", "5", "6", "7"}},
-		// 		"State":       process.Column{Entries: []interface{}{"Online", "Online", "Online", "Online", "Empty", "Empty", "Empty", "Empty", "Online", "Online", "Online", "Online", "Online", "Empty", "Empty"}},
-		// 		"Temperature": process.Column{Entries: []interface{}{"24", "23", "23", "21", "", "", "", "", "20", "20", "21", "20", "18", "", "", ""}},
-		// 	},
-		// },
-		// {
-		// 	TemplateFilePath: "/../../testfiles/07.txt",
-		// 	SourceFilePath:   "/../../testfiles/src07.txt",
-		// 	CorrectRecord: map[string]process.Column{
-		// 		"Name":     process.Column{Entries: []interface{}{"Gi0/1", "Gi0/2", "Gi0/3", "Gi0/4"}},
-		// 		"Status":   process.Column{Entries: []interface{}{"up", "down", "down", "up"}},
-		// 		"Protocol": process.Column{Entries: []interface{}{[]string{"tcp", "udp", "arp"}, []string{"https", "udp", "bgp"}, []string{"tcp", "udp", "ospf"}, []string{"ip", "http", "rip"}}},
-		// 	},
-		// },
-		// {
-		// 	TemplateFilePath: "/../../testfiles/08.txt",
-		// 	SourceFilePath:   "/../../testfiles/src08.txt",
-		// 	CorrectRecord: map[string]process.Column{
-		// 		"Protocol":   process.Column{Entries: []interface{}{"B", "B", "B", "B", "B"}},
-		// 		"Type":       process.Column{Entries: []interface{}{"EX", "IN", "IN", "IN", "IN"}},
-		// 		"Prefix":     process.Column{Entries: []interface{}{"0.0.0.0/0", "192.0.2.76/30", "192.0.2.204/30", "192.0.2.80/30", "192.0.2.208/30"}},
-		// 		"Gateway":    process.Column{Entries: []interface{}{"192.0.2.73", "203.0.113.183", "203.0.113.183", "203.0.113.183", "203.0.113.183"}},
-		// 		"Distance":   process.Column{Entries: []interface{}{"20", "200", "200", "200", "200"}},
-		// 		"Metric":     process.Column{Entries: []interface{}{"100", "100", "100", "100", "100"}},
-		// 		"LastChange": process.Column{Entries: []interface{}{"4w0d", "4w2d", "4w2d", "4w2d", "4w2d"}},
-		// 	},
-		// },
-		// {
-		// 	TemplateFilePath: "/../../testfiles/09.txt",
-		// 	SourceFilePath:   "/../../testfiles/src09.txt",
-		// 	CorrectRecord: map[string]process.Column{
-		// 		"Protocol":   process.Column{Entries: []interface{}{"B", "B", "B", "B", "B"}},
-		// 		"Type":       process.Column{Entries: []interface{}{"EX", "IN", "IN", "IN", "IN"}},
-		// 		"Prefix":     process.Column{Entries: []interface{}{"0.0.0.0/0", "192.0.2.76/30", "192.0.2.204/30", "192.0.2.80/30", "192.0.2.208/30"}},
-		// 		"Gateway":    process.Column{Entries: []interface{}{[]string{"192.0.2.73"}, []string{"203.0.113.183"}, []string{"203.0.113.183"}, []string{"203.0.113.183"}, []string{"203.0.113.183"}}},
-		// 		"Distance":   process.Column{Entries: []interface{}{"20", "200", "200", "200", "200"}},
-		// 		"Metric":     process.Column{Entries: []interface{}{"100", "100", "100", "100", "100"}},
-		// 		"LastChange": process.Column{Entries: []interface{}{"4w0d", "4w2d", "4w2d", "4w2d", "4w2d"}},
-		// 	},
-		// },
-		// {
-		// 	TemplateFilePath: "/../../testfiles/10a.txt",
-		// 	SourceFilePath:   "/../../testfiles/src10.txt",
-		// 	CorrectRecord: map[string]process.Column{
-		// 		"Iface":  process.Column{Entries: []interface{}{"Gi0/1", "Gi0/2", "Gi0/3", "Gi0/6"}},
-		// 		"Name":   process.Column{Entries: []interface{}{"wan1", "wan2", "inside", "dmz"}},
-		// 		"Status": process.Column{Entries: []interface{}{"up", "down", "down", "down"}},
-		// 		"Error":  process.Column{Entries: []interface{}{"output Queue errors", "input Queue errors", "input Queue errors", "input Queue errors"}},
-		// 	},
-		// },
-		// {
-		// 	TemplateFilePath: "/../../testfiles/10b.txt",
-		// 	SourceFilePath:   "/../../testfiles/src10.txt",
-		// 	CorrectRecord: map[string]process.Column{
-		// 		"Iface":  process.Column{Entries: []interface{}{"Gi0/1", "Gi0/2", "Gi0/3", "Gi0/4", "Gi0/6"}},
-		// 		"Name":   process.Column{Entries: []interface{}{"wan1", "wan2", "inside", "", "dmz"}},
-		// 		"Status": process.Column{Entries: []interface{}{"up", "down", "down", "up", "down"}},
-		// 		"Error":  process.Column{Entries: []interface{}{"output Queue errors", "input Queue errors", "input Queue errors", "output Queue errors", "input Queue errors"}},
-		// 	},
-		// },
+		{
+			TemplateFilePath: "/../../testfiles/04.txt",
+			SourceFilePath:   "/../../testfiles/src04.txt",
+			ExpectedHeader:   []string{"Slot", "State", "Temperature"},
+			ExpectedRows: [][]interface{}{
+				{"0", "Online", "24"},
+				{"1", "Online", "25"},
+				{"2", "Online", "24"},
+				{"3", "Online", "23"},
+				{"4", "Empty", ""},
+				{"5", "Empty", ""},
+				{"6", "Empty", ""},
+				{"7", "Empty", ""},
+			},
+		},
+		{
+			TemplateFilePath: "/../../testfiles/05.txt",
+			SourceFilePath:   "/../../testfiles/src05.txt",
+			ExpectedHeader:   []string{"Chassis", "Slot", "State", "Temperature", "DRAM", "Buffer"},
+			ExpectedRows: [][]interface{}{
+				{"lcc0-re0", "0", "Online", "24", "512", "52"},
+				{"", "1", "Online", "23", "256", "53"},
+				{"", "2", "Online", "23", "256", "49"},
+				{"", "3", "Online", "21", "256", "49"},
+				{"", "4", "Empty", "", "", ""},
+				{"", "5", "Empty", "", "", ""},
+				{"", "6", "Empty", "", "", ""},
+				{"", "7", "Empty", "", "", ""},
+				{"lcc1-re1", "0", "Online", "20", "256", "50"},
+				{"", "1", "Online", "20", "256", "49"},
+				{"", "2", "Online", "21", "256", "49"},
+				{"", "3", "Online", "20", "256", "49"},
+				{"", "4", "Online", "18", "256", "49"},
+				{"", "5", "Empty", "", "", ""},
+				{"", "6", "Empty", "", "", ""},
+				{"", "7", "Empty", "", "", ""},
+			},
+		},
+		{
+			TemplateFilePath: "/../../testfiles/06.txt",
+			SourceFilePath:   "/../../testfiles/src06.txt",
+			ExpectedHeader:   []string{"Chassis", "Slot", "State", "Temperature", "DRAM", "Buffer"},
+			ExpectedRows: [][]interface{}{
+				{"lcc0-re0", "0", "Online", "24", "512", "52"},
+				{"lcc0-re0", "1", "Online", "23", "256", "53"},
+				{"lcc0-re0", "2", "Online", "23", "256", "49"},
+				{"lcc0-re0", "3", "Online", "21", "256", "49"},
+				{"lcc0-re0", "4", "Empty", "", "", ""},
+				{"lcc0-re0", "5", "Empty", "", "", ""},
+				{"lcc0-re0", "6", "Empty", "", "", ""},
+				{"lcc0-re0", "7", "Empty", "", "", ""},
+				{"lcc1-re1", "0", "Online", "20", "256", "50"},
+				{"lcc1-re1", "1", "Online", "20", "256", "49"},
+				{"lcc1-re1", "2", "Online", "21", "256", "49"},
+				{"lcc1-re1", "3", "Online", "20", "256", "49"},
+				{"lcc1-re1", "4", "Online", "18", "256", "49"},
+				{"lcc1-re1", "5", "Empty", "", "", ""},
+				{"lcc1-re1", "6", "Empty", "", "", ""},
+				{"lcc1-re1", "7", "Empty", "", "", ""},
+			},
+		},
+		{
+			TemplateFilePath: "/../../testfiles/07.txt",
+			SourceFilePath:   "/../../testfiles/src07.txt",
+			ExpectedHeader:   []string{"Name", "Status", "Protocol"},
+			ExpectedRows: [][]interface{}{
+				{"Gi0/1", "up", []string{"tcp", "udp", "arp"}},
+				{"Gi0/2", "down", []string{"https", "udp", "bgp"}},
+				{"Gi0/3", "down", []string{"tcp", "udp", "ospf"}},
+				{"Gi0/4", "up", []string{"ip", "http", "rip"}},
+			},
+		},
+		{
+			TemplateFilePath: "/../../testfiles/08.txt",
+			SourceFilePath:   "/../../testfiles/src08.txt",
+			ExpectedHeader:   []string{"Protocol", "Type", "Prefix", "Gateway", "Distance", "Metric", "LastChange"},
+			ExpectedRows: [][]interface{}{
+				{"B", "EX", "0.0.0.0/0", "192.0.2.73", "20", "100", "4w0d"},
+				{"B", "IN", "192.0.2.76/30", "203.0.113.183", "200", "100", "4w2d"},
+				{"B", "IN", "192.0.2.204/30", "203.0.113.183", "200", "100", "4w2d"},
+				{"B", "IN", "192.0.2.80/30", "203.0.113.183", "200", "100", "4w2d"},
+				{"B", "IN", "192.0.2.208/30", "203.0.113.183", "200", "100", "4w2d"},
+			},
+		},
+		{
+			TemplateFilePath: "/../../testfiles/09.txt",
+			SourceFilePath:   "/../../testfiles/src09.txt",
+			ExpectedHeader:   []string{"Protocol", "Type", "Prefix", "Gateway", "Distance", "Metric", "LastChange"},
+			ExpectedRows: [][]interface{}{
+				{"B", "EX", "0.0.0.0/0", []string{"192.0.2.73"}, "20", "100", "4w0d"},
+				{"B", "IN", "192.0.2.76/30", []string{"203.0.113.183"}, "200", "100", "4w2d"},
+				{"B", "IN", "192.0.2.204/30", []string{"203.0.113.183"}, "200", "100", "4w2d"},
+				{"B", "IN", "192.0.2.80/30", []string{"203.0.113.183"}, "200", "100", "4w2d"},
+				{"B", "IN", "192.0.2.208/30", []string{"203.0.113.183"}, "200", "100", "4w2d"},
+			},
+		},
+		{
+			TemplateFilePath: "/../../testfiles/10a.txt",
+			SourceFilePath:   "/../../testfiles/src10.txt",
+			ExpectedHeader:   []string{"Iface", "Name", "Status", "Error"},
+			ExpectedRows: [][]interface{}{
+				{"Gi0/1", "wan1", "up", "output Queue errors"},
+				{"Gi0/2", "wan2", "down", "input Queue errors"},
+				{"Gi0/3", "inside", "down", "input Queue errors"},
+				{"Gi0/6", "dmz", "down", "input Queue errors"},
+			},
+		},
+		{
+			TemplateFilePath: "/../../testfiles/10b.txt",
+			SourceFilePath:   "/../../testfiles/src10.txt",
+			ExpectedHeader:   []string{"Iface", "Name", "Status", "Error"},
+			ExpectedRows: [][]interface{}{
+				{"Gi0/1", "wan1", "up", "output Queue errors"},
+				{"Gi0/2", "wan2", "down", "input Queue errors"},
+				{"Gi0/3", "inside", "down", "input Queue errors"},
+				{"Gi0/4", "", "up", "output Queue errors"},
+				{"Gi0/6", "dmz", "down", "input Queue errors"},
+			},
+		},
 	}
 
 	// iterate all test.cases
@@ -189,39 +209,22 @@ func TestProcessAST(t *testing.T) {
 			}
 			for colIndex, colHeader := range test.ExpectedHeader {
 				_, astIndex := ast.GetValForValName(colHeader)
-				if row[astIndex] != test.ExpectedRows[indexRow][colIndex] {
-					t.Errorf("%d failed: Field '%s' in row %d with value '%s' is not equal expected '%s'",
-						testIndex, colHeader, indexRow, row[astIndex], test.ExpectedRows[indexRow][colIndex])
+
+				if reflect.TypeOf(test.ExpectedRows[indexRow][colIndex]).Kind() == reflect.Slice {
+					if !isEqual(row[astIndex].([]string), test.ExpectedRows[indexRow][colIndex].([]string)) {
+						t.Errorf("%d failed: Field '%s' in row %d with value '%s' is not equal expected '%s'",
+							testIndex, colHeader, indexRow, row[astIndex], test.ExpectedRows[indexRow][colIndex])
+
+					}
+				} else {
+					if row[astIndex] != test.ExpectedRows[indexRow][colIndex] {
+						t.Errorf("%d failed: Field '%s' in row %d with value '%s' is not equal expected '%s'",
+							testIndex, colHeader, indexRow, row[astIndex], test.ExpectedRows[indexRow][colIndex])
+					}
 				}
 			}
 			indexRow++
 		}
-
-		// // check
-		// for k, v := range test.CorrectRecord {
-		// 	// check if entries are available
-		// 	if len(record[k].Entries) < len(v.Entries) {
-		// 		t.Errorf("%d failed: len of values (%d) for '%s' are less than expected (%d)",
-		// 			index, len(record[k].Entries), k, len(v.Entries))
-		// 		break
-		// 	}
-
-		// 	// check if entries are correct
-		// 	for entryIndex, entry := range v.Entries {
-		// 		if reflect.TypeOf(entry).Kind() == reflect.Slice {
-		// 			if !isEqual(record[k].Entries[entryIndex].([]string), entry.([]string)) {
-		// 				t.Errorf("%d failed: Field '%s' Value '%s' is not equal expected '%+v'",
-		// 					index, k, record[k].Entries[entryIndex], entry)
-
-		// 			}
-		// 		} else {
-		// 			if record[k].Entries[entryIndex] != entry {
-		// 				t.Errorf("%d failed: Field '%s' Value '%s' is not equal expected '%+v'",
-		// 					index, k, record[k].Entries[entryIndex], entry)
-		// 			}
-		// 		}
-		// 	}
-		// }
 	}
 
 }

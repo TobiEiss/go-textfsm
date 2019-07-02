@@ -1,6 +1,8 @@
 package process
 
 import (
+	"fmt"
+	"reflect"
 	"regexp"
 
 	"github.com/TobiEiss/go-textfsm/pkg/models"
@@ -32,7 +34,7 @@ func NewProcess(ast models.AST, out chan<- []interface{}) (Process, error) {
 		stateDescriptions: []statemachine.StateDescription{},
 		ast:               ast,
 		machine:           map[string]*statemachine.MachineState{},
-		lastAddedRow:      []interface{}{},
+		lastAddedRow:      make([]interface{}, len(ast.Vals)),
 		record:            out,
 	}
 
@@ -83,17 +85,25 @@ func (process *process) Do(in chan string) {
 						// transform result to map
 						result := map[string]interface{}{}
 						for index, name := range names {
-							result[name] = submatch[index]
+							if existing, ok := result[name]; ok {
+								// is result[name] already a slice?
+								if _, ok := result[name].([]string); ok {
+									result[name] = append(result[name].([]string), submatch[index])
+								} else {
+									result[name] = []string{fmt.Sprintf("%v", existing), submatch[index]}
+								}
+							} else {
+								result[name] = submatch[index]
+							}
 						}
 
 						// add all founded fields to record
 						for index, val := range process.ast.Vals {
 							if field, ok := result[val.Variable]; ok {
-								if val.List {
-									activeState.AppendToRowField(index, field)
-								} else {
-									activeState.SetRowField(index, field)
+								if val.List && reflect.TypeOf(field).Kind() != reflect.Slice {
+									field = []string{fmt.Sprintf("%v", field)}
 								}
+								activeState.SetRowField(index, field)
 							}
 						}
 					}
@@ -108,9 +118,11 @@ func (process *process) Do(in chan string) {
 							if activeState.TmpRowField(index) == nil && val.Required {
 								requiredFieldIsEmpty = true
 							}
-							// add an empty string if tmpRow-Item is nil anv val is not FILLDOWN
-							if activeState.TmpRowField(index) == nil && !val.Filldown {
-								activeState.SetRowField(index, nil)
+							// add an empty string if tmpRow-Item is nil anv val is FILLDOWN
+							if activeState.TmpRowField(index) == nil && val.Filldown {
+								activeState.SetRowField(index, process.lastAddedRow[index])
+							} else if activeState.TmpRowField(index) == nil && !val.Filldown {
+								activeState.SetRowField(index, "")
 							}
 						}
 
@@ -119,6 +131,8 @@ func (process *process) Do(in chan string) {
 							copy(tmp, activeState.TmpRow())
 							process.record <- tmp
 							process.lastAddedRow = tmp
+							// clear tmpRow
+							activeState.ClearRowField()
 						}
 					}
 

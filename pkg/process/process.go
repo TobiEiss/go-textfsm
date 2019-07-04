@@ -145,6 +145,7 @@ func (process *process) Do(in chan string) {
 					if processCommand.Command.StateCall != "" {
 						process.findStateAndAddToMachine(processCommand.Command.StateCall, process.lastAddedRow)
 					}
+					break
 				}
 			}
 		}

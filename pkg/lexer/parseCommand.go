@@ -10,7 +10,7 @@ func (parser *Parser) parseCmd() (*models.AbstractStatement, error) {
 	// function to parse a value-call
 	parseValue := func(parser *Parser) (valname string, err error) {
 		// need a "{""
-		if token, _ := parser.scan(); token != CURLYBRACKETLEFT {
+		if token, _ := parser.scan(); token != CURLYBRACKETLEFT && token != DOLAR {
 			return "", parser.createError(ILLEGALTOKEN)
 		}
 
@@ -53,11 +53,17 @@ func (parser *Parser) parseCmd() (*models.AbstractStatement, error) {
 		token, val := parser.scan()
 		switch token {
 		case DOLAR:
-			valueName, err := parseValue(parser)
-			if err != nil {
-				return statement, err
+			// check if EOL (i.e. $$) is the case.
+			if token, _ := parser.scan(); token == DOLAR {
+				statement.Actions = append(statement.Actions, models.Action{Regex: parseRegex(val, parser)})
+			} else {
+				parser.unscan()
+				valueName, err := parseValue(parser)
+				if err != nil {
+					return statement, err
+				}
+				statement.Actions = append(statement.Actions, models.Action{Value: valueName})
 			}
-			statement.Actions = append(statement.Actions, models.Action{Value: valueName})
 		case EOF:
 			return statement, nil
 		case MINUS:

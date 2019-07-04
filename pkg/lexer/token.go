@@ -8,26 +8,27 @@ const (
 	EOF
 	WHITESPACE
 
-	IDENT // identifier
+	IDENT  // identifier
 
-	BRACKETLEFT        // (
-	BRACKETRIGHT       // )
-	CURLYBRACKETLEFT   // {
-	CURLYBRACKETRIGHT  // }
-	SQUAREBRACKETLEFT  // [
-	SQUAREBRACKETRIGHT // ]
-	BACKSLASH          // \
-	DOT                // .
-	COMMA              // ,
-	DOUBLEDOT          // :
-	PLUS               // +
-	MINUS              // -
-	ASTERISK           //*
-	CIRCUMFLEX         // ^
-	DOLAR              // $
-	BIGGER             // >
-	HASH               // #
-	PIPE               // |
+	BRACKETLEFT         // (
+	BRACKETRIGHT        // )
+	CURLYBRACKETLEFT    // {
+	CURLYBRACKETRIGHT   // }
+	SQUAREBRACKETLEFT   // [
+	SQUAREBRACKETRIGHT  // ]
+	BACKSLASH           // \
+	DOT                 // .
+	COMMA               // ,
+	DOUBLEDOT           // :
+	PLUS                // +
+	MINUS               // -
+	ASTERISK            // *
+	CIRCUMFLEX          // ^
+	DOLAR               // $
+	BIGGER              // >
+	HASH                // #
+	PIPE                // |
+	QUESTIONMARK        // ?
 
 	VALUE
 	START
@@ -35,7 +36,6 @@ const (
 	LIST
 	REQUIRED
 	RECORD
-
 )
 
 // eof represents a marker rune for the end of the reader.
@@ -61,6 +61,7 @@ var MiscCharMap = map[rune]Token{
 	'>':  BIGGER,
 	'#':  HASH,
 	'|':  PIPE,
+	'?': QUESTIONMARK,
 }
 
 // KeyWordMap is a map from the string to the Token
@@ -69,6 +70,6 @@ var KeyWordMap = map[string]Token{
 	"Start":    START,
 	"Filldown": FILLDOWN,
 	"List":     LIST,
-	"Required":  REQUIRED,
+	"Required": REQUIRED,
 	"Record":   RECORD,
 }

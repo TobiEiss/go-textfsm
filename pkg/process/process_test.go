@@ -23,7 +23,7 @@ func TestProcessAST(t *testing.T) {
 		ExpectedHeader   []string
 		ExpectedRows     [][]interface{}
 	}{
-		{
+		{ // index 0
 			TemplateFilePath: "/../../testfiles/01.txt",
 			SourceFilePath:   "/../../testfiles/src01.txt",
 			ExpectedHeader:   []string{"Year", "Time", "Timezone", "Month", "MonthDay"},
@@ -31,7 +31,7 @@ func TestProcessAST(t *testing.T) {
 				{"2009", "18:42:41", "PST", "Feb", "8"},
 			},
 		},
-		{
+		{ // index 1
 			TemplateFilePath: "/../../testfiles/02.txt",
 			SourceFilePath:   "/../../testfiles/src02.txt",
 			ExpectedHeader:   []string{"ResetReason", "Version", "Uptime", "ConfigRegister"},
@@ -39,7 +39,7 @@ func TestProcessAST(t *testing.T) {
 				{"Reload", "12.2(31)SGA1", "11 weeks, 4 days, 20 hours, 26 minutes", "0x2102"},
 			},
 		},
-		{
+		{ // index 2
 			TemplateFilePath: "/../../testfiles/03.txt",
 			SourceFilePath:   "/../../testfiles/src03.txt",
 			ExpectedHeader:   []string{"Slot", "State", "Temperature"},
@@ -50,7 +50,7 @@ func TestProcessAST(t *testing.T) {
 				{"3", "Online", "23"},
 			},
 		},
-		{
+		{ // index 3
 			TemplateFilePath: "/../../testfiles/04.txt",
 			SourceFilePath:   "/../../testfiles/src04.txt",
 			ExpectedHeader:   []string{"Slot", "State", "Temperature"},
@@ -65,7 +65,7 @@ func TestProcessAST(t *testing.T) {
 				{"7", "Empty", ""},
 			},
 		},
-		{
+		{ // index 4
 			TemplateFilePath: "/../../testfiles/05.txt",
 			SourceFilePath:   "/../../testfiles/src05.txt",
 			ExpectedHeader:   []string{"Chassis", "Slot", "State", "Temperature", "DRAM", "Buffer"},
@@ -88,7 +88,7 @@ func TestProcessAST(t *testing.T) {
 				{"", "7", "Empty", "", "", ""},
 			},
 		},
-		{
+		{ // index 5
 			TemplateFilePath: "/../../testfiles/06.txt",
 			SourceFilePath:   "/../../testfiles/src06.txt",
 			ExpectedHeader:   []string{"Chassis", "Slot", "State", "Temperature", "DRAM", "Buffer"},
@@ -111,7 +111,7 @@ func TestProcessAST(t *testing.T) {
 				{"lcc1-re1", "7", "Empty", "", "", ""},
 			},
 		},
-		{
+		{ // index 6
 			TemplateFilePath: "/../../testfiles/07.txt",
 			SourceFilePath:   "/../../testfiles/src07.txt",
 			ExpectedHeader:   []string{"Name", "Status", "Protocol"},
@@ -122,7 +122,7 @@ func TestProcessAST(t *testing.T) {
 				{"Gi0/4", "up", []string{"ip", "http", "rip"}},
 			},
 		},
-		{
+		{ // index 7
 			TemplateFilePath: "/../../testfiles/08.txt",
 			SourceFilePath:   "/../../testfiles/src08.txt",
 			ExpectedHeader:   []string{"Protocol", "Type", "Prefix", "Gateway", "Distance", "Metric", "LastChange"},
@@ -134,7 +134,7 @@ func TestProcessAST(t *testing.T) {
 				{"B", "IN", "192.0.2.208/30", "203.0.113.183", "200", "100", "4w2d"},
 			},
 		},
-		{
+		{ // index 8
 			TemplateFilePath: "/../../testfiles/09.txt",
 			SourceFilePath:   "/../../testfiles/src09.txt",
 			ExpectedHeader:   []string{"Protocol", "Type", "Prefix", "Gateway", "Distance", "Metric", "LastChange"},
@@ -146,7 +146,7 @@ func TestProcessAST(t *testing.T) {
 				{"B", "IN", "192.0.2.208/30", []string{"203.0.113.183"}, "200", "100", "4w2d"},
 			},
 		},
-		{
+		{ // index 9
 			TemplateFilePath: "/../../testfiles/10a.txt",
 			SourceFilePath:   "/../../testfiles/src10.txt",
 			ExpectedHeader:   []string{"Iface", "Name", "Status", "Error"},
@@ -157,7 +157,7 @@ func TestProcessAST(t *testing.T) {
 				{"Gi0/6", "dmz", "down", "input Queue errors"},
 			},
 		},
-		{
+		{ // index 10
 			TemplateFilePath: "/../../testfiles/10b.txt",
 			SourceFilePath:   "/../../testfiles/src10.txt",
 			ExpectedHeader:   []string{"Iface", "Name", "Status", "Error"},
@@ -167,6 +167,16 @@ func TestProcessAST(t *testing.T) {
 				{"Gi0/3", "inside", "down", "input Queue errors"},
 				{"Gi0/4", "", "up", "output Queue errors"},
 				{"Gi0/6", "dmz", "down", "input Queue errors"},
+			},
+		},
+		{ // index 11
+			TemplateFilePath: "/../../testfiles/11.txt",
+			SourceFilePath:   "/../../testfiles/src11.txt",
+			ExpectedHeader:   []string{"Port", "Name", "Status","Vlan", "Duplex", "Speed", "Type"},
+			ExpectedRows: [][]interface{}{
+				{"Gi1/0/2", "AccessPoint", "connected", "8", "a-full", "a-1000", "10/100/1000BaseTX"},
+				{"Gi1/0/3", "John's Office", "notconnect", "1", "auto", "auto", "10/100/1000BaseTX"},
+				{"Gi1/0/4", "SingleName", "connected", "1", "a-full", "a-100", "10/100/1000BaseTX"},
 			},
 		},
 	}

@@ -31,6 +31,7 @@ type Cmd struct {
 	Actions   []Action
 	Vals      []*Val
 	Record    bool
+	Continue  bool
 	StateCall string
 }
 

@@ -1,0 +1,12 @@
+Value Port (\S+)
+Value Name (.+?)
+Value Status (err-disabled|disabled|connected|notconnect|inactive)
+Value Vlan (\S+)
+Value Duplex (\S+)
+Value Speed (\S+)
+Value Type (\S+)
+
+
+Start
+  ^${Port}\s+${Name}\s+ -> Continue
+  ^.*${Status}\s+${Vlan}\s+${Duplex}\s+${Speed}\s+${Type}$$ -> Record

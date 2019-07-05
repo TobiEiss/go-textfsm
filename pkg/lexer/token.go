@@ -36,6 +36,7 @@ const (
 	LIST
 	REQUIRED
 	RECORD
+	CONTINUE
 )
 
 // eof represents a marker rune for the end of the reader.
@@ -61,7 +62,7 @@ var MiscCharMap = map[rune]Token{
 	'>':  BIGGER,
 	'#':  HASH,
 	'|':  PIPE,
-	'?': QUESTIONMARK,
+	'?':  QUESTIONMARK,
 }
 
 // KeyWordMap is a map from the string to the Token
@@ -72,4 +73,5 @@ var KeyWordMap = map[string]Token{
 	"List":     LIST,
 	"Required": REQUIRED,
 	"Record":   RECORD,
+	"Continue": CONTINUE,
 }

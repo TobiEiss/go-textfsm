@@ -89,6 +89,8 @@ func (parser *Parser) parseCmd() (*models.AbstractStatement, error) {
 					statement.StateCall = val
 				case RECORD:
 					statement.Record = true
+				case CONTINUE:
+					statement.Continue = true
 				case EOF:
 					return statement, nil
 				}

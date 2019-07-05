@@ -172,10 +172,21 @@ func TestProcessAST(t *testing.T) {
 		{ // index 11
 			TemplateFilePath: "/../../testfiles/11.txt",
 			SourceFilePath:   "/../../testfiles/src11.txt",
-			ExpectedHeader:   []string{"Port", "Name", "Status","Vlan", "Duplex", "Speed", "Type"},
+			ExpectedHeader:   []string{"Port", "Name", "Status", "Vlan", "Duplex", "Speed", "Type"},
 			ExpectedRows: [][]interface{}{
 				{"Gi1/0/2", "AccessPoint", "connected", "8", "a-full", "a-1000", "10/100/1000BaseTX"},
 				{"Gi1/0/3", "John's Office", "notconnect", "1", "auto", "auto", "10/100/1000BaseTX"},
+				{"Gi1/0/4", "SingleName", "connected", "1", "a-full", "a-100", "10/100/1000BaseTX"},
+			},
+		},
+		{ // index 12
+			TemplateFilePath: "/../../testfiles/12.txt",
+			SourceFilePath:   "/../../testfiles/src12.txt",
+			ExpectedHeader:   []string{"Port", "Name", "Status", "Vlan", "Duplex", "Speed", "Type"},
+			ExpectedRows: [][]interface{}{
+				{"Gi1/0/1", "Cpu1", "notconnect", "1", "auto", "auto", "10/100/1000BaseTX"},
+				{"Gi1/0/2", "AccessPoint", "connected", "8", "a-full", "a-1000", "10/100/1000BaseTX"},
+				{"Gi1/0/3", "John's", "notconnect", "1", "auto", "auto", "10/100/1000BaseTX"},
 				{"Gi1/0/4", "SingleName", "connected", "1", "a-full", "a-100", "10/100/1000BaseTX"},
 			},
 		},

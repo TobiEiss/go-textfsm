@@ -76,76 +76,11 @@ func (process *process) Do(in chan string) {
 
 				// check if line is relevant
 				if re.MatchString(line) {
-
-					submatch := re.FindStringSubmatch(line)
-					names := re.SubexpNames()
-
-					// len of submatch and names should be same
-					if len(submatch) == len(names) {
-						// transform result to map
-						result := map[string]interface{}{}
-						for index, name := range names {
-							if existing, ok := result[name]; ok {
-								// is result[name] already a slice?
-								if _, ok := result[name].([]string); ok {
-									result[name] = append(result[name].([]string), submatch[index])
-								} else {
-									result[name] = []string{fmt.Sprintf("%v", existing), submatch[index]}
-								}
-							} else {
-								result[name] = submatch[index]
-							}
-						}
-
-						// add all founded fields to record
-						for index, val := range process.ast.Vals {
-							if field, ok := result[val.Variable]; ok {
-								if val.List && reflect.TypeOf(field).Kind() != reflect.Slice {
-									field = []string{fmt.Sprintf("%v", field)}
-								}
-								activeState.SetRowField(index, field)
-							}
-						}
+					processLine(line, re, process, stateName, activeState, processCommand)
+					if !processCommand.Command.Continue {
+						break
 					}
 
-					// if processCommand has Record, add tempRecord to Record
-					if processCommand.Command.Record {
-						requiredFieldIsEmpty := false
-
-						// iterate all vals
-						for index, val := range process.ast.Vals {
-							// removeFlag if required-Field is nil
-							if activeState.TmpRowField(index) == nil && val.Required {
-								requiredFieldIsEmpty = true
-							}
-							// add an empty string if tmpRow-Item is nil anv val is FILLDOWN
-							if activeState.TmpRowField(index) == nil && val.Filldown {
-								activeState.SetRowField(index, process.lastAddedRow[index])
-							} else if activeState.TmpRowField(index) == nil && !val.Filldown {
-								activeState.SetRowField(index, "")
-							}
-						}
-
-						if !requiredFieldIsEmpty {
-							tmp := make([]interface{}, len(activeState.TmpRow()))
-							copy(tmp, activeState.TmpRow())
-							process.record <- tmp
-							process.lastAddedRow = tmp
-							// clear tmpRow
-							activeState.ClearRowField()
-						}
-					}
-
-					// if state ends
-					if processCommand.Command.StateCall == "Start" {
-						delete(process.machine, stateName)
-					}
-
-					// if state calls a new state
-					if processCommand.Command.StateCall != "" {
-						process.findStateAndAddToMachine(processCommand.Command.StateCall, process.lastAddedRow)
-					}
-					break
 				}
 			}
 		}
@@ -160,4 +95,79 @@ func (process *process) findStateAndAddToMachine(stateName string, tmpRow []inte
 			break
 		}
 	}
+}
+
+// process a single line and add records
+func processLine(line string, re *regexp.Regexp, process *process, stateName string,
+	activeState *statemachine.MachineState, processCommand statemachine.ProcessCommand) {
+
+	submatch := re.FindStringSubmatch(line)
+	names := re.SubexpNames()
+
+	// len of submatch and names should be same
+	if len(submatch) == len(names) {
+		// transform result to map
+		result := map[string]interface{}{}
+		for index, name := range names {
+			if existing, ok := result[name]; ok {
+				// is result[name] already a slice?
+				if _, ok := result[name].([]string); ok {
+					result[name] = append(result[name].([]string), submatch[index])
+				} else {
+					result[name] = []string{fmt.Sprintf("%v", existing), submatch[index]}
+				}
+			} else {
+				result[name] = submatch[index]
+			}
+		}
+
+		// add all founded fields to record
+		for index, val := range process.ast.Vals {
+			if field, ok := result[val.Variable]; ok {
+				if val.List && reflect.TypeOf(field).Kind() != reflect.Slice {
+					field = []string{fmt.Sprintf("%v", field)}
+				}
+				activeState.SetRowField(index, field)
+			}
+		}
+	}
+
+	// if processCommand has Record, add tempRecord to Record
+	if processCommand.Command.Record {
+		requiredFieldIsEmpty := false
+
+		// iterate all vals
+		for index, val := range process.ast.Vals {
+			// removeFlag if required-Field is nil
+			if activeState.TmpRowField(index) == nil && val.Required {
+				requiredFieldIsEmpty = true
+			}
+			// add an empty string if tmpRow-Item is nil anv val is FILLDOWN
+			if activeState.TmpRowField(index) == nil && val.Filldown {
+				activeState.SetRowField(index, process.lastAddedRow[index])
+			} else if activeState.TmpRowField(index) == nil && !val.Filldown {
+				activeState.SetRowField(index, "")
+			}
+		}
+
+		if !requiredFieldIsEmpty {
+			tmp := make([]interface{}, len(activeState.TmpRow()))
+			copy(tmp, activeState.TmpRow())
+			process.record <- tmp
+			process.lastAddedRow = tmp
+			// clear tmpRow
+			activeState.ClearRowField()
+		}
+	}
+
+	// if state ends
+	if processCommand.Command.StateCall == "Start" {
+		delete(process.machine, stateName)
+	}
+
+	// if state calls a new state
+	if processCommand.Command.StateCall != "" {
+		process.findStateAndAddToMachine(processCommand.Command.StateCall, process.lastAddedRow)
+	}
+
 }

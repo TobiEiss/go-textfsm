@@ -23,6 +23,7 @@ type AbstractStatement struct {
 	Regex        string
 	Actions      []Action
 	Record       bool
+	Continue     bool
 	Comment      string
 	Filldown     bool
 	List         bool
@@ -53,6 +54,7 @@ func (statement *AbstractStatement) Command() Cmd {
 	return Cmd{
 		Actions:   statement.Actions,
 		Record:    statement.Record,
+		Continue:  statement.Continue,
 		StateCall: statement.StateCall,
 	}
 }

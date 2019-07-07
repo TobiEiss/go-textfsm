@@ -134,7 +134,7 @@ func processLine(line string, re *regexp.Regexp, process *process, stateName str
 	}
 
 	if processCommand.Command.Clearall {
-		for index, _ := range process.ast.Vals {
+		for index := range process.ast.Vals {
 			activeState.SetRowField(index, "")
 		}
 	}

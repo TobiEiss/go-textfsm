@@ -121,7 +121,7 @@ func processLine(line string, re *regexp.Regexp, process *process, stateName str
 			}
 		}
 
-		// add all founded fields to record
+		// add all founded fields to record::
 		for index, val := range process.ast.Vals {
 			if field, ok := result[val.Variable]; ok {
 				if val.List && reflect.TypeOf(field).Kind() != reflect.Slice {

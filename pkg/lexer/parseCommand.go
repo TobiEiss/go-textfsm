@@ -91,6 +91,10 @@ func (parser *Parser) parseCmd() (*models.AbstractStatement, error) {
 					statement.Record = true
 				case CONTINUE:
 					statement.Continue = true
+				case CLEAR:
+					statement.Clear = true
+				case CLEARALL:
+					statement.Clearall = true
 				case EOF:
 					return statement, nil
 				}

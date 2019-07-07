@@ -76,6 +76,7 @@ func (process *process) Do(in chan string) {
 
 				// check if line is relevant
 				if re.MatchString(line) {
+
 					processLine(line, re, process, stateName, activeState, processCommand)
 					if !processCommand.Command.Continue {
 						break
@@ -128,6 +129,20 @@ func processLine(line string, re *regexp.Regexp, process *process, stateName str
 					field = []string{fmt.Sprintf("%v", field)}
 				}
 				activeState.SetRowField(index, field)
+			}
+		}
+	}
+
+	if processCommand.Command.Clearall {
+		for index, _ := range process.ast.Vals {
+			activeState.SetRowField(index, "")
+		}
+	}
+
+	if processCommand.Command.Clear {
+		for index, val := range process.ast.Vals {
+			if !val.Filldown {
+				activeState.SetRowField(index, "")
 			}
 		}
 	}

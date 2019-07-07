@@ -24,6 +24,8 @@ type AbstractStatement struct {
 	Actions      []Action
 	Record       bool
 	Continue     bool
+	Clear        bool
+	Clearall     bool
 	Comment      string
 	Filldown     bool
 	List         bool
@@ -55,6 +57,8 @@ func (statement *AbstractStatement) Command() Cmd {
 		Actions:   statement.Actions,
 		Record:    statement.Record,
 		Continue:  statement.Continue,
+		Clear:     statement.Clear,
+		Clearall:  statement.Clearall,
 		StateCall: statement.StateCall,
 	}
 }

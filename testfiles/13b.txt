@@ -1,0 +1,10 @@
+Value Filldown Ifname  (\S+)
+Value Name             (\S+)
+Value Status           (down|up)
+Value Index            (.*)
+
+Start
+  ^Interface:\s+${Ifname}
+  ^\s+name\s+"${Name}" -> Clearall
+  ^\s+status\s+${Status}
+  ^\s+index:\s+${Index} -> Record

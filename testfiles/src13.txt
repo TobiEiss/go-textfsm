@@ -1,0 +1,21 @@
+name       status           Protocols
+Interface: Gi0/1
+    name "wan1"
+    status up
+    index: 101
+Interface: Gi0/2
+    name "wan2"
+    status down
+    index: 898
+Interface: Gi0/3
+    name "inside"
+    status down
+    index: 666
+Interface: Gi0/4
+    name  "dmz1"
+    status up
+    index: 999
+Interface: Gi0/6
+    name "dmz"
+    status down
+    index: 100

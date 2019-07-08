@@ -1,0 +1,10 @@
+Value Ifname  (\S+)
+Value Name    (\S+)
+Value Status  (down|up)
+Value Index   (.*)
+
+Start
+  ^Interface:\s+${Ifname}
+  ^\s+name\s+"${Name}" -> Clear
+  ^\s+status\s+${Status}
+  ^\s+index:\s+${Index} -> Record

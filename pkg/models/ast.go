@@ -32,6 +32,8 @@ type Cmd struct {
 	Vals      []*Val
 	Record    bool
 	Continue  bool
+	Clear     bool
+	Clearall  bool
 	StateCall string
 }
 

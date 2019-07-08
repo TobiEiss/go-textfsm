@@ -37,6 +37,8 @@ const (
 	REQUIRED
 	RECORD
 	CONTINUE
+	CLEAR
+	CLEARALL
 )
 
 // eof represents a marker rune for the end of the reader.
@@ -74,4 +76,6 @@ var KeyWordMap = map[string]Token{
 	"Required": REQUIRED,
 	"Record":   RECORD,
 	"Continue": CONTINUE,
+	"Clear":    CLEAR,
+	"Clearall": CLEARALL,
 }

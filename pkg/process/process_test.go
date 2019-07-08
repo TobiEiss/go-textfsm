@@ -190,6 +190,42 @@ func TestProcessAST(t *testing.T) {
 				{"Gi1/0/4", "SingleName", "connected", "1", "a-full", "a-100", "10/100/1000BaseTX"},
 			},
 		},
+		{ // index 13
+			TemplateFilePath: "/../../testfiles/13a.txt",
+			SourceFilePath:   "/../../testfiles/src13.txt",
+			ExpectedHeader:   []string{"Ifname", "Name", "Status", "Index"},
+			ExpectedRows: [][]interface{}{
+				{"Gi0/1", "", "up", "101"},
+				{"Gi0/2", "", "down", "898"},
+				{"Gi0/3", "", "down", "666"},
+				{"Gi0/4", "", "up", "999"},
+				{"Gi0/6", "", "down", "100"},
+			},
+		},
+		{ // index 14
+			TemplateFilePath: "/../../testfiles/13b.txt",
+			SourceFilePath:   "/../../testfiles/src13.txt",
+			ExpectedHeader:   []string{"Ifname", "Name", "Status", "Index"},
+			ExpectedRows: [][]interface{}{
+				{"", "", "up", "101"},
+				{"", "", "down", "898"},
+				{"", "", "down", "666"},
+				{"", "", "up", "999"},
+				{"", "", "down", "100"},
+			},
+		},
+		{ // index 15
+			TemplateFilePath: "/../../testfiles/13c.txt",
+			SourceFilePath:   "/../../testfiles/src13.txt",
+			ExpectedHeader:   []string{"Ifname", "Name", "Status", "Index"},
+			ExpectedRows: [][]interface{}{
+				{"", "", "up", "101"},
+				{"", "", "down", "898"},
+				{"", "", "down", "666"},
+				{"", "", "up", "999"},
+				{"", "", "down", "100"},
+			},
+		},
 	}
 
 	// iterate all test.cases

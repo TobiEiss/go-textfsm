@@ -36,7 +36,7 @@ func (parser *Parser) parseVal() (*models.AbstractStatement, error) {
 	// Now the regex
 	regex := ""
 	for {
-		token, val := parser.scanIgnoreWhitespace()
+		token, val := parser.scan()
 		if token == EOF || token == ILLEGAL {
 			return nil, &Error{ErrorType: ILLEGALTOKEN, CurrentLine: parser.currentline, ErrorToken: val}
 		} else if token == BRACKETRIGHT {

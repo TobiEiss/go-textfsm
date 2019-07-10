@@ -19,6 +19,7 @@ func TestParserValue(t *testing.T) {
 		{ValStr: `Value Month (\w+)`, ExpectedVal: models.Val{Variable: "Month", Regex: `\w+`}},
 		{ValStr: `Value Timezone (\S+)`, ExpectedVal: models.Val{Variable: "Timezone", Regex: `\S+`}},
 		{ValStr: `Value Time (..:..:..)`, ExpectedVal: models.Val{Variable: "Time", Regex: `..:..:..`}},
+		{ValStr: `Value WithSpace (abc abc)`, ExpectedVal: models.Val{Variable: "WithSpace", Regex: `abc abc`}},
 
 		// illegal cases
 		{ValStr: "Valuee ", ErrorType: lexer.ILLEGALTOKEN},

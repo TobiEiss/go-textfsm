@@ -16,6 +16,7 @@ const (
 	CURLYBRACKETRIGHT  // }
 	SQUAREBRACKETLEFT  // [
 	SQUAREBRACKETRIGHT // ]
+	SLASH              // /
 	BACKSLASH          // \
 	DOT                // .
 	COMMA              // ,
@@ -29,6 +30,7 @@ const (
 	HASH               // #
 	PIPE               // |
 	QUESTIONMARK       // ?
+	PERCENTSIGN        // %
 
 	VALUE
 	START
@@ -52,6 +54,7 @@ var MiscCharMap = map[rune]Token{
 	'}':  CURLYBRACKETRIGHT,
 	'[':  SQUAREBRACKETLEFT,
 	']':  SQUAREBRACKETRIGHT,
+	'/':  SLASH,
 	'\\': BACKSLASH,
 	'.':  DOT,
 	',':  COMMA,
@@ -65,6 +68,7 @@ var MiscCharMap = map[rune]Token{
 	'#':  HASH,
 	'|':  PIPE,
 	'?':  QUESTIONMARK,
+	'%':  PERCENTSIGN,
 }
 
 // KeyWordMap is a map from the string to the Token

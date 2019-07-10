@@ -31,6 +31,11 @@ func TestScanner(t *testing.T) {
 		// Identifiers
 		{`foo`, lexer.IDENT, `foo`},
 		{`abc_def-123`, lexer.IDENT, `abc_def`},
+		{`23`, lexer.IDENT, `23`},
+
+		// linguistics
+		{`Ä`, lexer.IDENT, `Ä`},
+		{`ö`, lexer.IDENT, `ö`},
 	}
 
 	// run test

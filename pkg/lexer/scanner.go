@@ -27,7 +27,7 @@ func (scanner *Scanner) Scan() (token Token, literal string) {
 	if isWhitespace(character) {
 		scanner.unread()
 		return scanner.scanWhitespace()
-	} else if isLetter(character) {
+	} else if isLetter(character) || isDigit(character) || isLingusitics(character) {
 		scanner.unread()
 		return scanner.scanIdent()
 	}
@@ -54,7 +54,7 @@ func (scanner *Scanner) scanIdent() (tok Token, lit string) {
 	for {
 		if character := scanner.read(); character == eof {
 			break
-		} else if !isLetter(character) && !isDigit(character) && !isAllowedSpecialCharacter(character) {
+		} else if !isLetter(character) && !isDigit(character) && !isAllowedSpecialCharacter(character) && !isLingusitics(character) {
 			scanner.unread()
 			break
 		} else {
@@ -126,4 +126,9 @@ func isDigit(ch rune) bool {
 // isAllowedSpecialCharacter returns true if the rune is a allowed character
 func isAllowedSpecialCharacter(ch rune) bool {
 	return (ch == '_' || ch == '.')
+}
+
+// isLingusitics returns true if the rune is a allowed linguistics (ger.: Umlaut)
+func isLingusitics(ch rune) bool {
+	return ch == 'ä' || ch == 'Ä' || ch == 'Ö' || ch == 'ö' || ch == 'Ü' || ch == 'ü'
 }

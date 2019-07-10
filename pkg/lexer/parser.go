@@ -38,7 +38,7 @@ func (parser *Parser) ParseStatement() (*models.AbstractStatement, error) {
 		case START:
 			return &models.AbstractStatement{Type: models.StateHeader, StateName: "Start"}, nil
 		}
-		return nil, parser.createError(ILLEGALTOKEN)
+		return nil, &Error{ErrorType: ILLEGALTOKEN, CurrentLine: parser.currentline, ErrorToken: val}
 	}
 
 	// if token is not a keyword it have to be a command
@@ -102,8 +102,4 @@ func isTokenAKeyWord(token Token) bool {
 		}
 	}
 	return false
-}
-
-func (parser *Parser) createError(errorType ErrorType) *Error {
-	return &Error{ErrorType: errorType}
 }

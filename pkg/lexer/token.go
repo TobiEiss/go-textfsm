@@ -8,27 +8,27 @@ const (
 	EOF
 	WHITESPACE
 
-	IDENT  // identifier
+	IDENT // identifier
 
-	BRACKETLEFT         // (
-	BRACKETRIGHT        // )
-	CURLYBRACKETLEFT    // {
-	CURLYBRACKETRIGHT   // }
-	SQUAREBRACKETLEFT   // [
-	SQUAREBRACKETRIGHT  // ]
-	BACKSLASH           // \
-	DOT                 // .
-	COMMA               // ,
-	DOUBLEDOT           // :
-	PLUS                // +
-	MINUS               // -
-	ASTERISK            // *
-	CIRCUMFLEX          // ^
-	DOLAR               // $
-	BIGGER              // >
-	HASH                // #
-	PIPE                // |
-	QUESTIONMARK        // ?
+	BRACKETLEFT        // (
+	BRACKETRIGHT       // )
+	CURLYBRACKETLEFT   // {
+	CURLYBRACKETRIGHT  // }
+	SQUAREBRACKETLEFT  // [
+	SQUAREBRACKETRIGHT // ]
+	BACKSLASH          // \
+	DOT                // .
+	COMMA              // ,
+	DOUBLEDOT          // :
+	PLUS               // +
+	MINUS              // -
+	ASTERISK           // *
+	CIRCUMFLEX         // ^
+	DOLAR              // $
+	BIGGER             // >
+	HASH               // #
+	PIPE               // |
+	QUESTIONMARK       // ?
 
 	VALUE
 	START

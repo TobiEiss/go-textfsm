@@ -13,24 +13,24 @@ func (parser *Parser) parseVal() (*models.AbstractStatement, error) {
 		statement.Filldown = true
 		identToken, variable = parser.scanIgnoreWhitespace()
 	}
-	if identToken == LIST{
+	if identToken == LIST {
 		statement.List = true
 		identToken, variable = parser.scanIgnoreWhitespace()
 	}
-	if identToken == REQUIRED{
+	if identToken == REQUIRED {
 		statement.Required = true
 		identToken, variable = parser.scanIgnoreWhitespace()
 	}
 	if identToken == EOF {
-		return nil, parser.createError(MISSINGARGUMENT)
+		return nil, &Error{ErrorType: MISSINGARGUMENT, CurrentLine: parser.currentline, ErrorToken: variable}
 	}
 	if identToken != IDENT {
-		return nil, parser.createError(ILLEGALTOKEN)
+		return nil, &Error{ErrorType: ILLEGALTOKEN, CurrentLine: parser.currentline, ErrorToken: variable}
 	}
 
 	// Next have to be BRACKETLEFT
-	if bracketleftToken, _ := parser.scanIgnoreWhitespace(); bracketleftToken != BRACKETLEFT {
-		return nil, parser.createError(MISSINGARGUMENT)
+	if bracketleftToken, val := parser.scanIgnoreWhitespace(); bracketleftToken != BRACKETLEFT {
+		return nil, &Error{ErrorType: MISSINGARGUMENT, CurrentLine: parser.currentline, ErrorToken: val}
 	}
 
 	// Now the regex
@@ -38,7 +38,7 @@ func (parser *Parser) parseVal() (*models.AbstractStatement, error) {
 	for {
 		token, val := parser.scanIgnoreWhitespace()
 		if token == EOF || token == ILLEGAL {
-			return nil, parser.createError(ILLEGALTOKEN)
+			return nil, &Error{ErrorType: ILLEGALTOKEN, CurrentLine: parser.currentline, ErrorToken: val}
 		} else if token == BRACKETRIGHT {
 			break
 		}

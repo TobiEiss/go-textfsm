@@ -10,15 +10,15 @@ func (parser *Parser) parseCmd() (*models.AbstractStatement, error) {
 	// function to parse a value-call
 	parseValue := func(parser *Parser) (valname string, err error) {
 		// need a "{""
-		if token, _ := parser.scan(); token != CURLYBRACKETLEFT && token != DOLAR {
-			return "", parser.createError(ILLEGALTOKEN)
+		if token, val := parser.scan(); token != CURLYBRACKETLEFT && token != DOLAR {
+			return "", &Error{ErrorType: ILLEGALTOKEN, CurrentLine: parser.currentline, ErrorToken: val}
 		}
 
 		for {
 			token, val := parser.scan()
 			switch token {
 			case EOF:
-				err = parser.createError(ILLEGALTOKEN)
+				err = &Error{ErrorType: ILLEGALTOKEN, CurrentLine: parser.currentline, ErrorToken: val}
 				return
 			case CURLYBRACKETRIGHT:
 				return

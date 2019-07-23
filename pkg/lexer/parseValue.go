@@ -34,13 +34,20 @@ func (parser *Parser) parseVal() (*models.AbstractStatement, error) {
 	}
 
 	// Now the regex
+	var bracketCounter = 0
 	regex := ""
 	for {
+
 		token, val := parser.scan()
 		if token == EOF || token == ILLEGAL {
 			return nil, &Error{ErrorType: ILLEGALTOKEN, CurrentLine: parser.currentline, ErrorToken: val}
+		} else if token == BRACKETLEFT {
+			bracketCounter++
 		} else if token == BRACKETRIGHT {
-			break
+			if bracketCounter == 0 {
+				break
+			}
+			bracketCounter--
 		}
 		regex += val
 	}

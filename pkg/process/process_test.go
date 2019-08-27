@@ -284,6 +284,80 @@ func TestProcessAST(t *testing.T) {
 
 }
 
+func TestInline(t *testing.T) {
+	tests := []struct {
+		template       string
+		source         string
+		ExpectedHeader []string
+		ExpectedRows   [][]interface{}
+	}{
+		{
+			template: `Value Year (\d+)
+			Value MonthDay (\d+)
+			Value Month (\w+)
+			Value Timezone (\S+)
+			Value Time (..:..:..)
+			
+			Start
+			  ^${Time}.* ${Timezone} \w+ ${Month} ${MonthDay} ${Year} -> Record`,
+			source:         `18:42:41.321 PST Sun Feb 8 2009`,
+			ExpectedHeader: []string{"Year", "Time", "Timezone", "Month", "MonthDay"},
+			ExpectedRows: [][]interface{}{
+				{"2009", "18:42:41", "PST", "Feb", "8"},
+			},
+		},
+	}
+
+	for testIndex, test := range tests {
+		tmplCh := make(chan string)
+		go reader.ReadLineByLineFileAsString(test.template, tmplCh)
+
+		srcCh := make(chan string)
+		go reader.ReadLineByLineFileAsString(test.template, srcCh)
+
+		// create AST
+		ast, err := ast.CreateAST(tmplCh)
+		if err != nil {
+			t.Error(err)
+		}
+
+		// process ast
+		record := make(chan []interface{})
+		process, err := process.NewProcess(ast, record)
+		if err != nil {
+			t.Error(err)
+		}
+		go process.Do(srcCh)
+
+		// check
+		indexRow := 0
+		for {
+			// get next row
+			row, ok := <-record
+			if !ok {
+				break
+			}
+			for colIndex, colHeader := range test.ExpectedHeader {
+				_, astIndex := ast.GetValForValName(colHeader)
+
+				if reflect.TypeOf(test.ExpectedRows[indexRow][colIndex]).Kind() == reflect.Slice {
+					if !isEqual(row[astIndex].([]string), test.ExpectedRows[indexRow][colIndex].([]string)) {
+						t.Errorf("%d failed: Field '%s' in row %d with value '%s' is not equal expected '%s'",
+							testIndex, colHeader, indexRow, row[astIndex], test.ExpectedRows[indexRow][colIndex])
+
+					}
+				} else {
+					if row[astIndex] != test.ExpectedRows[indexRow][colIndex] {
+						t.Errorf("%d failed: Field '%s' in row %d with value '%s' is not equal expected '%s'",
+							testIndex, colHeader, indexRow, row[astIndex], test.ExpectedRows[indexRow][colIndex])
+					}
+				}
+			}
+			indexRow++
+		}
+	}
+}
+
 func isEqual(a, b []string) bool {
 	if len(a) != len(b) {
 		return false

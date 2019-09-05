@@ -1,0 +1,32 @@
+flow exporter-map superflow
+ version v9
+  options interface-table timeout 1
+  options sampler-table timeout 1
+  template timeout 1
+  template data timeout 1
+  template options timeout 1
+ !
+ transport udp 2055
+ source Loopback99
+ destination 15.21.66.54
+!
+flow exporter-map superflow2
+ version v9
+  options interface-table timeout 1
+  options sampler-table timeout 1
+  template timeout 115.21.66.154
+  template data timeout 1
+  template options timeout 1
+ !
+ transport udp 2055
+ source Loopback99
+ destination 15.21.66.154
+!
+interface tunnel-te5455
+ description LSP:RTRA->RTRB->LAB
+ ipv4 unnumbered Loopback65
+ load-interval 30
+ destination 8.8.8.8
+ fast-reroute
+ record-route
+!

@@ -63,6 +63,7 @@ func TestParseCommands(t *testing.T) {
 		{
 			Command: `^${Time}.* ${Timezone} \w+ ${Month} ${MonthDay} ${Year} -> Record`,
 			ExpectedActions: []models.Action{
+				models.Action{Regex: "^"},
 				models.Action{Value: "Time"},
 				models.Action{Regex: ".*"},
 				models.Action{Regex: " "},

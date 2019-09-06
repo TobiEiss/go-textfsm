@@ -67,7 +67,7 @@ func (parser *Parser) ParseStatement() (*models.AbstractStatement, error) {
 // scanIgnoreWhitespace scans the next non-whitespace token.
 func (parser *Parser) scanIgnoreWhitespace() (token Token, literal string) {
 	token, literal = parser.scan()
-	if token == WHITESPACE {
+	for token == WHITESPACE {
 		token, literal = parser.scan()
 	}
 	return

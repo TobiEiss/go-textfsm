@@ -49,8 +49,8 @@ func (parser *Parser) parseCmd() (*models.AbstractStatement, error) {
 	}
 
 	// iterate
+	token, val := parser.buf.token, parser.buf.literal
 	for {
-		token, val := parser.scan()
 		switch token {
 		case DOLAR:
 			// check if EOL (i.e. $$) is the case.
@@ -104,5 +104,7 @@ func (parser *Parser) parseCmd() (*models.AbstractStatement, error) {
 		default:
 			statement.Actions = append(statement.Actions, models.Action{Regex: parseRegex(val, parser)})
 		}
+		// read next token
+		token, val = parser.scan()
 	}
 }

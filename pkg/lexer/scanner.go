@@ -77,19 +77,6 @@ func (scanner *Scanner) scanWhitespace() (tok Token, lit string) {
 	var buf bytes.Buffer
 	buf.WriteRune(scanner.read())
 
-	// Read every subsequent whitespace character into the buffer.
-	// Non-whitespace characters and EOF will cause the loop to exit.
-	for {
-		if character := scanner.read(); character == eof {
-			break
-		} else if !isWhitespace(character) {
-			scanner.unread()
-			break
-		} else {
-			buf.WriteRune(character)
-		}
-	}
-
 	return WHITESPACE, buf.String()
 }
 

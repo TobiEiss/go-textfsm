@@ -45,7 +45,7 @@ func TestReaderWithCreatingAST(t *testing.T) {
 	if len(ast.Vals) != 5 {
 		t.Error(errors.New("ast.vals has not length of 5 like expected"))
 	}
-	if len(ast.States[0].Commands[0].Actions) != 12 {
+	if len(ast.States[0].Commands[0].Actions) != 13 {
 		t.Error(errors.New("actions has not length of 7 like expected"))
 	}
 }

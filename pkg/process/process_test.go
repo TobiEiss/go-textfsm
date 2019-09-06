@@ -234,6 +234,14 @@ func TestProcessAST(t *testing.T) {
 				{"5455", "RTRA->RTRB->LAB", "Loopback65", "8.8.8.8"},
 			},
 		},
+		{ // index 17
+			TemplateFilePath: "/../../testfiles/15.txt",
+			SourceFilePath:   "/../../testfiles/src15.txt",
+			ExpectedHeader:   []string{"FirstValue", "SecondValue"},
+			ExpectedRows: [][]interface{}{
+				{"100", "2"},
+			},
+		},
 	}
 
 	// iterate all test.cases
@@ -287,6 +295,10 @@ func TestProcessAST(t *testing.T) {
 				}
 			}
 			indexRow++
+		}
+
+		if indexRow != len(test.ExpectedRows) {
+			t.Errorf("%d failed: %d expected rows - but here are %d rows", testIndex, len(test.ExpectedRows), indexRow)
 		}
 	}
 

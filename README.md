@@ -39,7 +39,7 @@ Folder-structure for the example is like this:
 ```
 
 Here the `main.go`:
-```
+```go
 package main
 
 import (

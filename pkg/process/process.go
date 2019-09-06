@@ -156,8 +156,9 @@ func processLine(line string, re *regexp.Regexp, process *process, stateName str
 			// removeFlag if required-Field is nil
 			if activeState.TmpRowField(index) == nil && val.Required {
 				requiredFieldIsEmpty = true
+				continue
 			}
-			// add an empty string if tmpRow-Item is nil anv val is FILLDOWN
+			// add an empty string if tmpRow-Item is nil and val is FILLDOWN
 			if activeState.TmpRowField(index) == nil && val.Filldown {
 				activeState.SetRowField(index, process.lastAddedRow[index])
 			} else if activeState.TmpRowField(index) == nil && !val.Filldown {

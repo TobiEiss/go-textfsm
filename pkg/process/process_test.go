@@ -226,6 +226,14 @@ func TestProcessAST(t *testing.T) {
 				{"", "", "down", "100"},
 			},
 		},
+		{ // index 16
+			TemplateFilePath: "/../../testfiles/14.txt",
+			SourceFilePath:   "/../../testfiles/src14.txt",
+			ExpectedHeader:   []string{"Interface", "Description", "UnnumInterface", "Destination"},
+			ExpectedRows: [][]interface{}{
+				{"5455", "RTRA->RTRB->LAB", "Loopback65", "8.8.8.8"},
+			},
+		},
 	}
 
 	// iterate all test.cases

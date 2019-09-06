@@ -1,0 +1,7 @@
+Value FirstValue (\d+)
+Value SecondValue (\d+)
+
+
+Start
+  ^${FirstValue}.*
+  ^CPUs: ${SecondValue}.*

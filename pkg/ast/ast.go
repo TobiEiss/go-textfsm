@@ -50,5 +50,10 @@ func CreateAST(lines chan string) (models.AST, error) {
 	// finally add currentState to states
 	ast.States = append(ast.States, currentState)
 
+	// if there is only the "Start"-state, last command have be with a record
+	if len(ast.States) == 1 {
+		ast.States[0].Commands[len(currentState.Commands)-1].Record = true
+	}
+
 	return ast, nil
 }

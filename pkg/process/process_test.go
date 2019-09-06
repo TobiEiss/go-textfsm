@@ -242,6 +242,14 @@ func TestProcessAST(t *testing.T) {
 				{"100", "2"},
 			},
 		},
+		{ // index 17
+			TemplateFilePath: "/../../testfiles/16.txt",
+			SourceFilePath:   "/../../testfiles/src16.txt",
+			ExpectedHeader:   []string{"FirstValue", "SecondValue"},
+			ExpectedRows: [][]interface{}{
+				{"100", "2"},
+			},
+		},
 	}
 
 	// iterate all test.cases

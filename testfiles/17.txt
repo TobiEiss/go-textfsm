@@ -1,0 +1,24 @@
+Value neighbor (\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b)
+Value ASN (\d+)
+Value NGROUP (\S+)
+Value DESC (\S+)
+Value RPIN (\S+)
+Value RPOUT (\S+)
+
+Start
+  ^router bgp.* -> BGP
+
+BGP
+  ^.*neighbor ${neighbor}.* -> NEIGH
+
+NEIGH
+  ^.*remote-as ${ASN}
+  ^.*use neighbor-group ${NGROUP}
+  ^.*description ${DESC}
+  ^.*address-family ipv4 unicast -> AFI4UNI
+  ^.*! -> Record BGP
+
+AFI4UNI
+  ^.*route-policy ${RPIN} in
+  ^.*route-policy ${RPOUT} out
+  ^.*! -> Record BGP

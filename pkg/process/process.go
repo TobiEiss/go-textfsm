@@ -60,6 +60,13 @@ func NewProcess(ast models.AST, out chan<- []interface{}) (Process, error) {
 
 // Do process an ast. Get inputfile as channel line by line
 func (process *process) Do(in chan string) {
+	// first active State is always Start,
+	activeState := process.machine["Start"]
+	stateName := "Start"
+	stateMachine := activeState
+
+	numberOfColumns := len(process.ast.Vals)
+	tmp := make([]interface{}, numberOfColumns)
 	// iterate lines
 	for {
 		// get next line
@@ -67,25 +74,32 @@ func (process *process) Do(in chan string) {
 		if !ok {
 			break
 		}
-		// iterate all activestates
-		for stateName, activeState := range process.machine {
-			// iterate commands of a active state
-			for _, processCommand := range activeState.StateDescription.ProcessCommands {
-				// check one command matches to line
-				re := regexp.MustCompile(processCommand.MatchingLine)
 
-				// check if line is relevant
-				if re.MatchString(line) {
+	Start:
+		// iterate commands of a current stateMachine
+		for _, processCommand := range stateMachine.StateDescription.ProcessCommands {
+			// check one command matches to line
+			re := regexp.MustCompile(processCommand.MatchingLine)
 
-					processLine(line, re, process, stateName, activeState, processCommand)
-					if !processCommand.Command.Continue {
-						break
-					}
+			// check if line is relevant
+			if re.MatchString(line) {
 
+				processLine(line, re, process, stateName, activeState, processCommand)
+
+				if processCommand.Command.StateCall != "" {
+					stateName = processCommand.Command.StateCall
+					stateMachine = process.getStateMachine(stateName, tmp)
+					goto Start
 				}
+
+				if !processCommand.Command.Continue {
+					break
+				}
+
 			}
 		}
 	}
+
 	close(process.record)
 }
 
@@ -96,6 +110,20 @@ func (process *process) findStateAndAddToMachine(stateName string, tmpRow []inte
 			break
 		}
 	}
+}
+
+// get the state-machine, if not exist create one and return it.
+func (process *process) getStateMachine(stateName string, tmpRow []interface{}) *statemachine.MachineState {
+
+Start:
+	for name, machine := range process.machine {
+		if name == stateName {
+			return machine
+		}
+	}
+	process.findStateAndAddToMachine(stateName, tmpRow)
+	goto Start
+
 }
 
 // process a single line and add records
@@ -169,21 +197,15 @@ func processLine(line string, re *regexp.Regexp, process *process, stateName str
 		if !requiredFieldIsEmpty {
 			tmp := make([]interface{}, len(activeState.TmpRow()))
 			copy(tmp, activeState.TmpRow())
-			process.record <- tmp
 			process.lastAddedRow = tmp
-			// clear tmpRow
+			process.record <- tmp
+
+			for _, stateDescription := range process.stateDescriptions {
+				process.getStateMachine(stateDescription.OriginState.Name, tmp).ClearRowField()
+			}
+
 			activeState.ClearRowField()
 		}
-	}
-
-	// if state ends
-	if processCommand.Command.StateCall == "Start" {
-		delete(process.machine, stateName)
-	}
-
-	// if state calls a new state
-	if processCommand.Command.StateCall != "" {
-		process.findStateAndAddToMachine(processCommand.Command.StateCall, process.lastAddedRow)
 	}
 
 }

@@ -242,12 +242,29 @@ func TestProcessAST(t *testing.T) {
 				{"100", "2"},
 			},
 		},
-		{ // index 17
+		{ // index 18
 			TemplateFilePath: "/../../testfiles/16.txt",
 			SourceFilePath:   "/../../testfiles/src16.txt",
 			ExpectedHeader:   []string{"FirstValue", "SecondValue"},
 			ExpectedRows: [][]interface{}{
 				{"100", "2"},
+			},
+		},
+		{ // index 19
+			TemplateFilePath: "/../../testfiles/17.txt",
+			SourceFilePath:   "/../../testfiles/src17.txt",
+			ExpectedHeader:   []string{"neighbor", "ASN", "NGROUP", "DESC", "RPIN", "RPOUT"},
+			ExpectedRows: [][]interface{}{
+				{"192.168.74.22", "", "INERNALCPE", "INTERNAL:CPE:ROUTEREFLECTOR", "", ""},
+				{"192.168.74.23", "", "INERNALCPE", "INTERNAL:CPE:ROUTEREFLECTOR", "", ""},
+				{"192.168.74.24", "", "INERNALCPE", "INTERNAL:CPE:ROUTEREFLECTOR", "", ""},
+				{"192.168.74.25", "", "INERNALCPE", "INTERNAL:CPE:ROUTEREFLECTOR", "", ""},
+				{"172.31.255.11", "", "EXTERNALBLUE", "EXTERNAL:CPE:ROUTEREFLECTOR", "reject", "reject"},
+				{"1.1.1.1", "808", "808HAWAII", "EXTERNAL:CUSTOMER:808", "", ""},
+				{"2.2.2.2", "", "1299TT", "FULLROUTES:TT", "", "TT"},
+				{"19.12.12.1", "", "19NG", "INTERNAL:ROUTES:VPN", "reject-some", "reject-them"},
+				{"32.12.12.12", "9999", "BLACKHOLE", "EXTERNAL:SERVICEVPN:100", "", ""},
+				{"23.23.23.23", "9082", "23S-policy", "EXTERNAL:SERVICEVPN:200", "", ""},
 			},
 		},
 	}

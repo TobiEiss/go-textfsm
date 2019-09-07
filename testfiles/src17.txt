@@ -1,0 +1,74 @@
+
+router bgp 65115
+ bgp router-id 127.0.0.1
+ !
+ neighbor-group INTERNAL_CABLE_MODEMS
+  remote-as 65513
+  update-source Loopback1
+  graceful-restart
+  address-family ipv4 unicast
+   route-policy all in
+   route-policy all out
+   next-hop-self
+  !
+ neighbor-group SOME-policy
+  use neighbor-group SHOULD_NEVER_SEE
+  !
+ !
+ neighbor 192.168.74.22
+  use neighbor-group INERNALCPE
+  description INTERNAL:CPE:ROUTEREFLECTOR
+ !
+ neighbor 192.168.74.23
+  use neighbor-group INERNALCPE
+  description INTERNAL:CPE:ROUTEREFLECTOR
+ !
+ neighbor 192.168.74.24
+  use neighbor-group INERNALCPE
+  description INTERNAL:CPE:ROUTEREFLECTOR
+ !
+ neighbor 192.168.74.25
+  use neighbor-group INERNALCPE
+  description INTERNAL:CPE:ROUTEREFLECTOR
+ !
+ neighbor 172.31.255.11
+  use neighbor-group EXTERNALBLUE
+  description EXTERNAL:CPE:ROUTEREFLECTOR
+  address-family ipv4 unicast
+   route-policy reject in
+   route-policy reject out
+  !
+ !
+ neighbor 1.1.1.1
+  remote-as 808
+  use neighbor-group 808HAWAII
+  description EXTERNAL:CUSTOMER:808
+ !
+ neighbor 2.2.2.2
+  use neighbor-group 1299TT
+  description FULLROUTES:TT
+  address-family ipv4 unicast
+   route-policy TT out
+  !
+ !
+  !
+ neighbor 19.12.12.1
+  use neighbor-group 19NG
+  description INTERNAL:ROUTES:VPN
+  address-family ipv4 unicast
+   route-policy reject-some in
+   route-policy reject-them out
+  !
+ !
+ neighbor 32.12.12.12
+  remote-as 9999
+  use neighbor-group BLACKHOLE
+  description EXTERNAL:SERVICEVPN:100
+ !
+ neighbor 23.23.23.23
+  remote-as 9082
+  use neighbor-group 23S-policy
+  description EXTERNAL:SERVICEVPN:200
+  address-family ipv4 unicast
+  !
+ !

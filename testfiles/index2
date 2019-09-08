@@ -1,0 +1,23 @@
+
+# First line is the header fields for columns and is mandatory.
+# Regular expressions are supported in all fields except the first.
+# Last field supports variable length command completion.
+# abc[[xyz]] is expanded to abc(x(y(z)?)?)?, regexp inside [[]] is not supported
+#
+# Rules of Ordering:
+#  - OS in alphbetical order
+#  - Command in length other
+#  - When Length is the same, use alphabetical order
+#  - Keep space between OS's
+#
+Template, Hostname, Platform, Command
+
+arista_eos_show_snmp_community.template, .*, arista_eos, sh[[ow]] sn[[mp]] com[[munity]]
+arista_eos_show_reload_cause.template, .*, arista_eos, sh[[ow]] relo[[ad]] ca[[use]]
+
+cisco_asa_show_interface.template, .*, cisco_asa, sh[[ow]] int[[erface]]
+cisco_asa_show_version.template, .*, cisco_asa, sh[[ow]] ver[[sion]]
+
+paloalto_panos_show_counter_global.template, .*, paloalto_panos, sh[[ow]] coun[[ter]] glo[[bal]]
+vmware_nsxv_show_ip_bgp_neighbors.template, .*, vmware_nsxv, sh[[ow]] ip b[[gp]] n[[eighbors]]
+vmware_nsxv_show_ip_route.template, .*, vmware_nsxv, sh[[ow]] ip r[[oute]]

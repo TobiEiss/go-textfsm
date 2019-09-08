@@ -131,7 +131,7 @@ func cmdVarCompletion(command string) string {
 	if !strings.Contains(command, "[[") {
 		return command
 	}
-	re, _ := regexp.Compile("\\[\\[(\\S*)]]")
+	re, _ := regexp.Compile(`\[\[(\S*)]]`)
 
 	matches := re.FindAllStringSubmatch(command, -1)
 

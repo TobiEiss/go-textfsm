@@ -33,8 +33,10 @@ You can use the following code to
 Folder-structure for the example is like this:
 ```
 .
+├── templates
+    ├── example_template.txt
+    ├── index
 ├── source.txt
-├── template.txt
 ├── main.go
 ```
 
@@ -59,7 +61,7 @@ var (
 
 func main() {
 	// read template
-	filepath := basepath + "/template.txt"
+	filepath := basepath + "/templates/example_template.txt"
 	tmplCh := make(chan string)
 	go reader.ReadLineByLine(filepath, tmplCh)
 
@@ -94,5 +96,56 @@ func main() {
 	}
 }
 ```
+
+for [CliTable](https://github.com/google/textfsm/wiki/Cli-Table): 
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/TobiEiss/go-textfsm/pkg/cliTable"
+	"github.com/TobiEiss/go-textfsm/pkg/process"
+	"github.com/TobiEiss/go-textfsm/pkg/reader"
+	"log"
+)
+
+func main() {
+	srcChan := make(chan string)
+
+	T := cliTable.NewCliTable("/templates", "index")
+	
+	// cliTable attributes/mataData for template lookup
+	attrs := map[string]string{
+		"Command":  "show required",
+		"Platform": "arista_eos",
+	}
+	go reader.ReadLineByLine("source.txt", srcChan)
+	abstractStatementT, err := T.CreateAST(attrs)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	record := make(chan []interface{})
+
+	process, err := process.NewProcess(abstractStatementT, record)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	go process.Do(srcChan)
+
+	for {
+
+		row, ok := <-record
+		if !ok {
+			break
+		}
+
+		fmt.Println(row)
+	}
+
+}
+```
+
 
 Find more examples how to build template-files here: [TextFSM-Wiki](https://github.com/google/textfsm/wiki/TextFSM)

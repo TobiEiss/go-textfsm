@@ -100,6 +100,8 @@ func (process *process) Do(in chan string) {
 		}
 	}
 
+	// add current tmp-record to record
+	ConfirmTmpRecord(process, machineState)
 	close(process.record)
 }
 
@@ -177,31 +179,39 @@ func processLine(line string, re *regexp.Regexp, process *process, stateName str
 
 	// if processCommand has Record, add tempRecord to Record
 	if processCommand.Command.Record {
-		requiredFieldIsEmpty := false
+		ConfirmTmpRecord(process, machineState)
+	}
 
-		// iterate all vals
-		for index, val := range process.ast.Vals {
-			// removeFlag if required-Field is nil
-			if machineState.TmpRowField(index) == nil && val.Required {
-				requiredFieldIsEmpty = true
-				continue
-			}
-			// add an empty string if tmpRow-Item is nil and val is FILLDOWN
-			if machineState.TmpRowField(index) == nil && val.Filldown {
-				machineState.SetRowField(index, process.lastAddedRow[index])
-			} else if machineState.TmpRowField(index) == nil && !val.Filldown {
-				machineState.SetRowField(index, "")
-			}
+}
+
+// ConfirmTmpRecord add tmpRecord to main-record
+func ConfirmTmpRecord(process *process, machineState *statemachine.MachineState) {
+	requiredFieldIsEmpty := false
+	allFieldsEmpty := true
+
+	// iterate all vals
+	for index, val := range process.ast.Vals {
+		// removeFlag if required-Field is nil
+		if machineState.TmpRowField(index) == nil && val.Required {
+			requiredFieldIsEmpty = true
+			continue
+		} else if machineState.TmpRowField(index) != nil {
+			allFieldsEmpty = false
 		}
-
-		if !requiredFieldIsEmpty {
-			tmp := make([]interface{}, len(machineState.TmpRow()))
-			copy(tmp, machineState.TmpRow())
-			process.lastAddedRow = tmp
-			process.record <- tmp
-
-			machineState.ClearRowField()
+		// add an empty string if tmpRow-Item is nil and val is FILLDOWN
+		if machineState.TmpRowField(index) == nil && val.Filldown {
+			machineState.SetRowField(index, process.lastAddedRow[index])
+		} else if machineState.TmpRowField(index) == nil && !val.Filldown {
+			machineState.SetRowField(index, "")
 		}
 	}
 
+	if !requiredFieldIsEmpty && !allFieldsEmpty {
+		tmp := make([]interface{}, len(machineState.TmpRow()))
+		copy(tmp, machineState.TmpRow())
+		process.lastAddedRow = tmp
+		process.record <- tmp
+
+		machineState.ClearRowField()
+	}
 }

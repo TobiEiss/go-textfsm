@@ -1,0 +1,8 @@
+Value foo (\d+)
+Value bar (\d+)
+Value xyz (\d+)
+
+Start
+  ^Foo:\s* ${foo}
+  ^Bar:\s* ${bar}
+  ^XYZ:\s* ${xyz} -> Record

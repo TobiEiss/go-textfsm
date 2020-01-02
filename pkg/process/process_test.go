@@ -267,6 +267,14 @@ func TestProcessAST(t *testing.T) {
 				{"23.23.23.23", "9082", "23S-policy", "EXTERNAL:SERVICEVPN:200", "", ""},
 			},
 		},
+		{ // index 20
+			TemplateFilePath: "/../../testfiles/18.txt",
+			SourceFilePath:   "/../../testfiles/src18.txt",
+			ExpectedHeader:   []string{"foo", "bar", "xyz"},
+			ExpectedRows: [][]interface{}{
+				{"100", "200", ""},
+			},
+		},
 	}
 
 	// iterate all test.cases
